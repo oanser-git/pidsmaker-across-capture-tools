@@ -1,0 +1,578 @@
+name: orange_recap_raw_orthrus_100_asha_r1_e3
+repo_root: ${P_EDR_ROOT}/external/PIDSMaker
+artifact_root: ${P_EDR_ROOT}/artifacts/pidsmaker/orthrus
+log_root: ${P_EDR_ROOT}/run_logs
+results_dir: ${P_EDR_ROOT}/pidsmaker_experiments/hpo_results/orange_recap_raw_orthrus_100_asha_r1_e3
+selection_metric: adp_score
+completion_metric: adp_score
+method: orthrus_paper
+dataset: ORANGE_RECAP_RAW
+epochs: 3
+runs:
+- name: c000_lr1em05_wd1em05_out64_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+- name: c001_lr1em05_wd0_out64_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+- name: c002_lr1em05_wd0_out64_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+- name: c003_lr1em05_wd0_out64_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+- name: c004_lr1em05_wd0_out128_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+- name: c005_lr1em05_wd0_out128_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+- name: c006_lr1em05_wd0_out128_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+- name: c007_lr1em05_wd0_out256_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+- name: c008_lr1em05_wd0_out256_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+- name: c009_lr1em05_wd0_out256_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+- name: c010_lr1em05_wd1em06_out64_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+- name: c011_lr1em05_wd1em06_out64_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+- name: c012_lr1em05_wd1em06_out64_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+- name: c013_lr1em05_wd1em06_out128_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+- name: c014_lr1em05_wd1em06_out128_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+- name: c015_lr1em05_wd1em06_out128_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+- name: c016_lr1em05_wd1em06_out256_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+- name: c017_lr1em05_wd1em06_out256_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+- name: c018_lr1em05_wd1em06_out256_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+- name: c019_lr1em05_wd1em05_out64_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+- name: c020_lr1em05_wd1em05_out64_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+- name: c021_lr1em05_wd1em05_out128_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+- name: c022_lr1em05_wd1em05_out128_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+- name: c023_lr1em05_wd1em05_out128_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+- name: c024_lr1em05_wd1em05_out256_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+- name: c025_lr1em05_wd1em05_out256_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+- name: c026_lr1em05_wd1em05_out256_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 1.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+- name: c027_lr3em05_wd0_out64_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+- name: c028_lr3em05_wd0_out64_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+- name: c029_lr3em05_wd0_out64_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+- name: c030_lr3em05_wd0_out128_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+- name: c031_lr3em05_wd0_out128_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+- name: c032_lr3em05_wd0_out128_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+- name: c033_lr3em05_wd0_out256_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+- name: c034_lr3em05_wd0_out256_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+- name: c035_lr3em05_wd0_out256_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 0.0
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+- name: c036_lr3em05_wd1em06_out64_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+- name: c037_lr3em05_wd1em06_out64_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+- name: c038_lr3em05_wd1em06_out64_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+- name: c039_lr3em05_wd1em06_out128_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+- name: c040_lr3em05_wd1em06_out128_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+- name: c041_lr3em05_wd1em06_out128_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+- name: c042_lr3em05_wd1em06_out256_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+- name: c043_lr3em05_wd1em06_out256_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+- name: c044_lr3em05_wd1em06_out256_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+- name: c045_lr3em05_wd1em05_out64_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+- name: c046_lr3em05_wd1em05_out64_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+- name: c047_lr3em05_wd1em05_out64_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+- name: c048_lr3em05_wd1em05_out128_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+- name: c049_lr3em05_wd1em05_out128_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+- name: c050_lr3em05_wd1em05_out128_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+- name: c051_lr3em05_wd1em05_out256_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+- name: c052_lr3em05_wd1em05_out256_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+- name: c053_lr3em05_wd1em05_out256_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 3.0e-05
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+- name: c054_lr0p0001_wd0_out64_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+- name: c055_lr0p0001_wd0_out64_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+- name: c056_lr0p0001_wd0_out64_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+- name: c057_lr0p0001_wd0_out128_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+- name: c058_lr0p0001_wd0_out128_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+- name: c059_lr0p0001_wd0_out128_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+- name: c060_lr0p0001_wd0_out256_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+- name: c061_lr0p0001_wd0_out256_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+- name: c062_lr0p0001_wd0_out256_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+- name: c063_lr0p0001_wd1em06_out64_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+- name: c064_lr0p0001_wd1em06_out64_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+- name: c065_lr0p0001_wd1em06_out64_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+- name: c066_lr0p0001_wd1em06_out128_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+- name: c067_lr0p0001_wd1em06_out128_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+- name: c068_lr0p0001_wd1em06_out128_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+- name: c069_lr0p0001_wd1em06_out256_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+- name: c070_lr0p0001_wd1em06_out256_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+- name: c071_lr0p0001_wd1em06_out256_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+- name: c072_lr0p0001_wd1em05_out64_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+- name: c073_lr0p0001_wd1em05_out64_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+- name: c074_lr0p0001_wd1em05_out64_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+- name: c075_lr0p0001_wd1em05_out128_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+- name: c076_lr0p0001_wd1em05_out128_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+- name: c077_lr0p0001_wd1em05_out128_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+- name: c078_lr0p0001_wd1em05_out256_emb64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+- name: c079_lr0p0001_wd1em05_out256_emb128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+- name: c080_lr0p0001_wd1em05_out256_emb256_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_out_dim: 256
+    featurization.emb_dim: 256

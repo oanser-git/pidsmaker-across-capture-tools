@@ -1,0 +1,740 @@
+name: orange_recap_raw_kairos_100_asha_r0_e1
+repo_root: ${P_EDR_ROOT}/external/PIDSMaker
+artifact_root: ${P_EDR_ROOT}/artifacts/pidsmaker/kairos
+log_root: ${P_EDR_ROOT}/run_logs
+results_dir: ${P_EDR_ROOT}/pidsmaker_experiments/hpo_results/orange_recap_raw_kairos_100_asha_r0_e1
+selection_metric: adp_score
+completion_metric: adp_score
+method: kairos
+dataset: ORANGE_RECAP_RAW
+epochs: 1
+runs:
+- name: c000_lr5em05_wd0p01_dim100_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c001_lr2em05_wd0p001_dim64_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c002_lr2em05_wd0p001_dim64_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c003_lr2em05_wd0p001_dim64_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c004_lr2em05_wd0p001_dim100_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c005_lr2em05_wd0p001_dim100_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c006_lr2em05_wd0p001_dim100_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c007_lr2em05_wd0p001_dim128_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c008_lr2em05_wd0p001_dim128_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c009_lr2em05_wd0p001_dim128_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c010_lr2em05_wd0p01_dim64_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c011_lr2em05_wd0p01_dim64_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c012_lr2em05_wd0p01_dim64_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c013_lr2em05_wd0p01_dim100_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c014_lr2em05_wd0p01_dim100_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c015_lr2em05_wd0p01_dim100_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c016_lr2em05_wd0p01_dim128_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c017_lr2em05_wd0p01_dim128_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c018_lr2em05_wd0p01_dim128_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c019_lr2em05_wd0p1_dim64_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c020_lr2em05_wd0p1_dim64_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c021_lr2em05_wd0p1_dim64_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c022_lr2em05_wd0p1_dim100_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c023_lr2em05_wd0p1_dim100_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c024_lr2em05_wd0p1_dim100_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c025_lr2em05_wd0p1_dim128_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c026_lr2em05_wd0p1_dim128_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c027_lr2em05_wd0p1_dim128_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 2.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c028_lr5em05_wd0p001_dim64_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c029_lr5em05_wd0p001_dim64_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c030_lr5em05_wd0p001_dim64_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c031_lr5em05_wd0p001_dim100_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c032_lr5em05_wd0p001_dim100_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c033_lr5em05_wd0p001_dim100_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c034_lr5em05_wd0p001_dim128_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c035_lr5em05_wd0p001_dim128_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c036_lr5em05_wd0p001_dim128_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.001
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c037_lr5em05_wd0p01_dim64_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c038_lr5em05_wd0p01_dim64_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c039_lr5em05_wd0p01_dim64_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c040_lr5em05_wd0p01_dim100_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c041_lr5em05_wd0p01_dim100_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c042_lr5em05_wd0p01_dim128_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c043_lr5em05_wd0p01_dim128_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c044_lr5em05_wd0p01_dim128_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.01
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c045_lr5em05_wd0p1_dim64_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c046_lr5em05_wd0p1_dim64_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c047_lr5em05_wd0p1_dim64_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c048_lr5em05_wd0p1_dim100_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c049_lr5em05_wd0p1_dim100_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c050_lr5em05_wd0p1_dim100_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c051_lr5em05_wd0p1_dim128_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c052_lr5em05_wd0p1_dim128_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c053_lr5em05_wd0p1_dim128_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 5.0e-05
+    training.weight_decay: 0.1
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c054_lr0p0001_wd0p001_dim64_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.001
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c055_lr0p0001_wd0p001_dim64_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.001
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c056_lr0p0001_wd0p001_dim64_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.001
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c057_lr0p0001_wd0p001_dim100_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.001
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c058_lr0p0001_wd0p001_dim100_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.001
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c059_lr0p0001_wd0p001_dim100_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.001
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c060_lr0p0001_wd0p001_dim128_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.001
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c061_lr0p0001_wd0p001_dim128_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.001
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c062_lr0p0001_wd0p001_dim128_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.001
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c063_lr0p0001_wd0p01_dim64_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.01
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c064_lr0p0001_wd0p01_dim64_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.01
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c065_lr0p0001_wd0p01_dim64_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.01
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c066_lr0p0001_wd0p01_dim100_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.01
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c067_lr0p0001_wd0p01_dim100_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.01
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c068_lr0p0001_wd0p01_dim100_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.01
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c069_lr0p0001_wd0p01_dim128_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.01
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c070_lr0p0001_wd0p01_dim128_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.01
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c071_lr0p0001_wd0p01_dim128_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.01
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c072_lr0p0001_wd0p1_dim64_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.1
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c073_lr0p0001_wd0p1_dim64_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.1
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c074_lr0p0001_wd0p1_dim64_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.1
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c075_lr0p0001_wd0p1_dim100_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.1
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c076_lr0p0001_wd0p1_dim100_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.1
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c077_lr0p0001_wd0p1_dim100_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.1
+    training.node_hid_dim: 100
+    training.node_out_dim: 100
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
+- name: c078_lr0p0001_wd0p1_dim128_tgn64_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.1
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 64
+    training.encoder.tgn.tgn_time_dim: 64
+- name: c079_lr0p0001_wd0p1_dim128_tgn100_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.1
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 100
+    training.encoder.tgn.tgn_time_dim: 100
+- name: c080_lr0p0001_wd0p1_dim128_tgn128_seed0
+  overrides:
+    training.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.1
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    training.encoder.tgn.tgn_memory_dim: 128
+    training.encoder.tgn.tgn_time_dim: 128
