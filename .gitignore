@@ -12,11 +12,13 @@ run_logs/
 hpo_results/
 asha_runs/
 checkpoints/
-collab_orange/reference_dataset/
-collab_orange/pidsmaker_export/
-orange_benchmark/hpo_results/
-orange_benchmark/asha_runs/
-orange_benchmark/checkpoints/
+capture_export/data-raw/
+capture_export/reference_dataset/
+capture_export/pidsmaker_export/
+pidsmaker_experiments/hpo_results/
+pidsmaker_experiments/asha_runs/
+pidsmaker_experiments/checkpoints/
+pidsmaker_experiments/hpo_artifact_archives/
 
 # HPC/editor noise
 logs/
