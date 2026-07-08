@@ -1,0 +1,24 @@
+# All relative paths are resolved from this file.
+
+paths:
+  data_raw: ../data-raw
+  reference_dataset: ../reference_dataset
+  pidsmaker_export: ../pidsmaker_export
+
+processing:
+  workers: 2
+
+pidsmaker_export:
+  window_size_seconds: 60
+
+steps:
+  build_reference_dataset: true
+  build_splits: true
+  export_to_pidsmaker: true
+
+splits:
+  validation_has_attacks: false
+  benign_ratios:
+    train: 0.70
+    val: 0.15
+    test: 0.15
