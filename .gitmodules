@@ -1,0 +1,4 @@
+[submodule "external/PIDSMaker"]
+	path = external/PIDSMaker
+	url = https://github.com/ubc-provenance/PIDSMaker.git
+	branch = main

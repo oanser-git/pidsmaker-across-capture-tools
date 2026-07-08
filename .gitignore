@@ -1,0 +1,26 @@
+# Local Python/runtime artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+
+# Local experiment outputs and large generated data
+artifacts/
+run_logs/
+hpo_results/
+asha_runs/
+checkpoints/
+collab_orange/reference_dataset/
+collab_orange/pidsmaker_export/
+orange_benchmark/hpo_results/
+orange_benchmark/asha_runs/
+orange_benchmark/checkpoints/
+
+# HPC/editor noise
+logs/
+slurm-*.out
+*.tmp
+*.swp
+.DS_Store
