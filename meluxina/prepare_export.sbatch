@@ -11,7 +11,7 @@ set -euo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 P_EDR_ROOT=${P_EDR_ROOT:-$(cd -- "${SCRIPT_DIR}/.." && pwd -P)}
-HPO_APPTAINER_MODULE=${HPO_APPTAINER_MODULE:-Apptainer/1.2.4-GCCcore-12.3.0}
+HPO_APPTAINER_MODULE=${HPO_APPTAINER_MODULE:-Apptainer/1.4.2-GCCcore-14.2.0}
 HPO_IMAGE=${HPO_IMAGE:-${P_EDR_ROOT}/containers/pidsmaker-pids.sif}
 MELUXINA_EXPORT_WORKERS=${MELUXINA_EXPORT_WORKERS:-${SLURM_CPUS_PER_TASK:-1}}
 
