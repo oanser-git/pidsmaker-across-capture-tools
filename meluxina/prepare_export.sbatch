@@ -1,0 +1,100 @@
+#!/bin/bash -l
+#SBATCH --job-name=prepare_raw_export
+#SBATCH --account=p201223
+#SBATCH --partition=largemem
+#SBATCH --qos=default
+#SBATCH --cpus-per-task=128
+#SBATCH --mem=1T
+#SBATCH --time=2-00:00:00
+
+set -euo pipefail
+
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
+P_EDR_ROOT=${P_EDR_ROOT:-$(cd -- "${SCRIPT_DIR}/.." && pwd -P)}
+HPO_APPTAINER_MODULE=${HPO_APPTAINER_MODULE:-Apptainer/1.2.4-GCCcore-12.3.0}
+HPO_IMAGE=${HPO_IMAGE:-${P_EDR_ROOT}/containers/pidsmaker-pids.sif}
+MELUXINA_EXPORT_WORKERS=${MELUXINA_EXPORT_WORKERS:-${SLURM_CPUS_PER_TASK:-1}}
+
+DATA_RAW=${DATA_RAW:-${P_EDR_ROOT}/capture_export/data-raw}
+REFERENCE_DATASET=${REFERENCE_DATASET:-${P_EDR_ROOT}/capture_export/reference_dataset}
+PIDSMAKER_EXPORT=${PIDSMAKER_EXPORT:-${P_EDR_ROOT}/capture_export/pidsmaker_export}
+LOG_DIR=${LOG_DIR:-${P_EDR_ROOT}/run_logs}
+
+if [[ ! -d "${P_EDR_ROOT}/.git" ]]; then
+  printf 'P_EDR_ROOT does not look like the repo root: %s\n' "${P_EDR_ROOT}" >&2
+  exit 2
+fi
+if [[ ! -d "${DATA_RAW}" ]]; then
+  printf 'Missing raw input directory: %s\n' "${DATA_RAW}" >&2
+  exit 2
+fi
+if ! compgen -G "${DATA_RAW%/}/*" >/dev/null; then
+  printf 'Raw input directory is empty: %s\n' "${DATA_RAW}" >&2
+  exit 2
+fi
+
+mkdir -p "${LOG_DIR}" "${REFERENCE_DATASET}" "${PIDSMAKER_EXPORT}"
+
+CONFIG_PATH=${LOG_DIR}/meluxina_pipeline_config_${SLURM_JOB_ID:-manual}.yml
+cat > "${CONFIG_PATH}" <<EOF
+paths:
+  data_raw: ${DATA_RAW}
+  reference_dataset: ${REFERENCE_DATASET}
+  pidsmaker_export: ${PIDSMAKER_EXPORT}
+
+processing:
+  workers: ${MELUXINA_EXPORT_WORKERS}
+
+pidsmaker_export:
+  window_size_seconds: 60
+
+steps:
+  build_reference_dataset: true
+  build_splits: true
+  export_to_pidsmaker: true
+
+splits:
+  validation_has_attacks: false
+  benign_ratios:
+    train: 0.70
+    val: 0.15
+    test: 0.15
+EOF
+
+export MELUXINA_PIPELINE_CONFIG=${CONFIG_PATH}
+export PYTHONPATH=${P_EDR_ROOT}${PYTHONPATH:+:${PYTHONPATH}}
+
+printf 'P_EDR_ROOT=%s\n' "${P_EDR_ROOT}"
+printf 'DATA_RAW=%s\n' "${DATA_RAW}"
+printf 'REFERENCE_DATASET=%s\n' "${REFERENCE_DATASET}"
+printf 'PIDSMAKER_EXPORT=%s\n' "${PIDSMAKER_EXPORT}"
+printf 'MELUXINA_EXPORT_WORKERS=%s\n' "${MELUXINA_EXPORT_WORKERS}"
+printf 'MELUXINA_PIPELINE_CONFIG=%s\n' "${MELUXINA_PIPELINE_CONFIG}"
+
+: "${HPO_IMAGE:?Set HPO_IMAGE to the PIDSMaker Apptainer image}"
+if [[ ! -f "${HPO_IMAGE}" ]]; then
+  printf 'Missing Apptainer image: %s\n' "${HPO_IMAGE}" >&2
+  exit 2
+fi
+if ! command -v module >/dev/null 2>&1; then
+  printf 'The module command is unavailable. MeluXina modules are available inside compute jobs.\n' >&2
+  exit 2
+fi
+module load "${HPO_APPTAINER_MODULE}"
+
+NODE_TMP=${HPO_NODE_TMPDIR:-${TMPDIR:-/tmp}}
+export APPTAINER_CACHEDIR=${APPTAINER_CACHEDIR:-${NODE_TMP%/}/apptainer-cache-${USER:-user}}
+export APPTAINER_TMPDIR=${APPTAINER_TMPDIR:-${NODE_TMP%/}/apptainer-tmp-${USER:-user}}
+export APPTAINERENV_MELUXINA_PIPELINE_CONFIG=${MELUXINA_PIPELINE_CONFIG}
+export APPTAINERENV_PYTHONPATH=${PYTHONPATH}
+mkdir -p "${APPTAINER_CACHEDIR}" "${APPTAINER_TMPDIR}"
+
+RUNNER=(
+  apptainer exec
+  --bind "${P_EDR_ROOT}:${P_EDR_ROOT}"
+  --pwd "${P_EDR_ROOT}"
+  "${HPO_IMAGE}"
+  python
+)
+
+"${RUNNER[@]}" -c 'import os; from capture_export.pipeline.run_pipeline import main; main(os.environ["MELUXINA_PIPELINE_CONFIG"])'
