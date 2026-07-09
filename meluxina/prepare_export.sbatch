@@ -10,7 +10,13 @@
 set -euo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
-P_EDR_ROOT=${P_EDR_ROOT:-$(cd -- "${SCRIPT_DIR}/.." && pwd -P)}
+if [[ -z "${P_EDR_ROOT:-}" ]]; then
+  if [[ -n "${SLURM_SUBMIT_DIR:-}" && -d "${SLURM_SUBMIT_DIR}/.git" ]]; then
+    P_EDR_ROOT=$(cd -- "${SLURM_SUBMIT_DIR}" && pwd -P)
+  else
+    P_EDR_ROOT=$(cd -- "${SCRIPT_DIR}/.." && pwd -P)
+  fi
+fi
 HPO_APPTAINER_MODULE=${HPO_APPTAINER_MODULE:-Apptainer/1.4.2-GCCcore-14.2.0}
 HPO_IMAGE=${HPO_IMAGE:-${P_EDR_ROOT}/containers/pidsmaker-pids.sif}
 MELUXINA_EXPORT_WORKERS=${MELUXINA_EXPORT_WORKERS:-${SLURM_CPUS_PER_TASK:-1}}
