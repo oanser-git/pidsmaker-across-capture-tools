@@ -62,9 +62,8 @@ memory() {
   [[ -n $node && $node != '(None)' ]] || { printf 'Job is not running; no live memory available.\n'; return; }
   req_mem=$(r "squeue -j '$JOB_ID' -h -o '%m'")
   case "$req_mem" in *T) req_gib=$(( ${req_mem%T} * 1024 ));; *G) req_gib=${req_mem%G};; *M) req_gib=$(( ${req_mem%M} / 1024 ));; *) req_gib=0;; esac
-  r "ssh '$node' 'ps -u \"\$USER\" -o pid=,ppid=,pcpu=,rss=,etime=,comm= --sort=-rss; ps -u \"\$USER\" -o pid=,comm= | awk '\''\$2==\"python\"{print \$1}'\'' | while read -r pid; do awk '\''/^Pss:/{pss+=\$2} END{print pss}'\'' /proc/\$pid/smaps_rollup 2>/dev/null; done | awk -v limit=$req_gib '\''{pss+=\$1} END{pss/=1048576; printf \"python_memory_gib=%.1f/%.1f (%.0f%% of requested memory, PSS)\\n\", pss, limit, pss*100/limit}'\'''"
+  r "ssh '$node' \"ps -u \\\"\$USER\\\" -o pid=,ppid=,pcpu=,rss=,etime=,comm= --sort=-rss; ps -u \\\"\$USER\\\" -o pid=,comm= | awk '\\$2==\\\"python\\\"{print \\$1}' | while read -r pid; do awk '/^Pss:/{pss+=\\$2} END{print pss+0}' /proc/\\$pid/smaps_rollup 2>/dev/null; done | awk -v limit=$req_gib 'BEGIN{pss=0} {pss+=\\$1} END{pss/=1048576; printf \\\"python_pss_gib=%.1f/%.1f (%.0f%% of requested memory, PSS)\\\\n\\\", pss, limit, (limit>0?pss*100/limit:0)}'\""
 }
-
 while true; do
   pick_job
   while true; do
