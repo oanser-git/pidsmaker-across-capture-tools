@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 """Submit a MeluXina Slurm job from a small YAML file."""
 
-from __future__ import annotations
-
 import argparse
 from pathlib import Path
 import shlex
 import subprocess
 import sys
-from typing import Any
+from typing import Any, Dict, List
 
 import yaml
 
@@ -30,7 +28,7 @@ def repo_root() -> Path:
     return Path(__file__).resolve().parents[1]
 
 
-def load_config(path: Path) -> dict[str, Any]:
+def load_config(path: Path) -> Dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         config = yaml.safe_load(handle) or {}
     if not isinstance(config, dict):
@@ -55,7 +53,7 @@ def resolve_path(value: str, root: Path) -> str:
     return str(root / path)
 
 
-def build_command(config: dict[str, Any], config_path: Path) -> list[str]:
+def build_command(config: Dict[str, Any], config_path: Path) -> List[str]:
     root = repo_root()
     config_dir = config_path.resolve().parent
     job = expand(config.get("job") or {}, root, config_dir)
