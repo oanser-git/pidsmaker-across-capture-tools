@@ -15,6 +15,8 @@ checkpoints/
 capture_export/data-raw/
 capture_export/reference_dataset/
 capture_export/pidsmaker_export/
+containers/*.sif
+containers/*.sif.tmp-*
 pidsmaker_experiments/hpo_results/
 pidsmaker_experiments/asha_runs/
 pidsmaker_experiments/checkpoints/

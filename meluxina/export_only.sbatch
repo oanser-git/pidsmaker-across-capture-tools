@@ -19,7 +19,9 @@ if [[ -z "${P_EDR_ROOT:-}" ]]; then
 fi
 HPO_APPTAINER_MODULE=${HPO_APPTAINER_MODULE:-Apptainer/1.4.2-GCCcore-14.2.0}
 HPO_IMAGE=${HPO_IMAGE:-${P_EDR_ROOT}/containers/export-prep.sif}
-MELUXINA_EXPORT_WORKERS=${MELUXINA_EXPORT_WORKERS:-4}
+MELUXINA_IMAGE_SOURCE=${MELUXINA_IMAGE_SOURCE:-docker://pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime}
+MELUXINA_AUTO_BUILD_IMAGE=${MELUXINA_AUTO_BUILD_IMAGE:-1}
+MELUXINA_EXPORT_WORKERS=${MELUXINA_EXPORT_WORKERS:-16}
 
 DATA_RAW=${DATA_RAW:-${P_EDR_ROOT}/capture_export/data-raw}
 REFERENCE_DATASET=${REFERENCE_DATASET:-${P_EDR_ROOT}/capture_export/reference_dataset}
@@ -73,26 +75,17 @@ export PYTHONPATH=${P_EDR_ROOT}${PYTHONPATH:+:${PYTHONPATH}}
 printf 'P_EDR_ROOT=%s\n' "${P_EDR_ROOT}"
 printf 'REFERENCE_DATASET=%s\n' "${REFERENCE_DATASET}"
 printf 'PIDSMAKER_EXPORT=%s\n' "${PIDSMAKER_EXPORT}"
+printf 'HPO_IMAGE=%s\n' "${HPO_IMAGE}"
+printf 'MELUXINA_IMAGE_SOURCE=%s\n' "${MELUXINA_IMAGE_SOURCE}"
+printf 'MELUXINA_AUTO_BUILD_IMAGE=%s\n' "${MELUXINA_AUTO_BUILD_IMAGE}"
 printf 'MELUXINA_EXPORT_WORKERS=%s\n' "${MELUXINA_EXPORT_WORKERS}"
 printf 'MELUXINA_PIPELINE_CONFIG=%s\n' "${MELUXINA_PIPELINE_CONFIG}"
 
-: "${HPO_IMAGE:?Set HPO_IMAGE to the export Apptainer image}"
-if [[ ! -f "${HPO_IMAGE}" ]]; then
-  printf 'Missing Apptainer image: %s\n' "${HPO_IMAGE}" >&2
-  exit 2
-fi
-if ! command -v module >/dev/null 2>&1; then
-  printf 'The module command is unavailable. MeluXina modules are available inside compute jobs.\n' >&2
-  exit 2
-fi
-module load "${HPO_APPTAINER_MODULE}"
+source "${SCRIPT_DIR}/ensure_export_apptainer_image.sh"
+ensure_apptainer_image
 
-NODE_TMP=${HPO_NODE_TMPDIR:-${TMPDIR:-/tmp}}
-export APPTAINER_CACHEDIR=${APPTAINER_CACHEDIR:-${NODE_TMP%/}/apptainer-cache-${USER:-user}}
-export APPTAINER_TMPDIR=${APPTAINER_TMPDIR:-${NODE_TMP%/}/apptainer-tmp-${USER:-user}}
 export APPTAINERENV_MELUXINA_PIPELINE_CONFIG=${MELUXINA_PIPELINE_CONFIG}
 export APPTAINERENV_PYTHONPATH=${PYTHONPATH}
-mkdir -p "${APPTAINER_CACHEDIR}" "${APPTAINER_TMPDIR}"
 
 apptainer exec \
   --bind "${P_EDR_ROOT}:${P_EDR_ROOT}" \

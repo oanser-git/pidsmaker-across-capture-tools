@@ -2,13 +2,15 @@ job:
   script: meluxina/export_only.sbatch
   account: p201223
   partition: cpu
-  qos: default
+  qos: dev
   cpus_per_task: 256
   mem: 480G
-  time: 2-00:00:00
+  time: 06:00:00
   output: run_logs/%x-%j.out
   error: run_logs/%x-%j.err
 
 env:
   HPO_IMAGE: ${P_EDR_ROOT}/containers/export-prep.sif
-  MELUXINA_EXPORT_WORKERS: 4
+  MELUXINA_IMAGE_SOURCE: docker://pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
+  MELUXINA_AUTO_BUILD_IMAGE: 1
+  MELUXINA_EXPORT_WORKERS: 16
