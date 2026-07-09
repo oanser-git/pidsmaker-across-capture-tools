@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#SBATCH --job-name=prepare_raw_export
+#SBATCH --job-name=export_raw_only
 #SBATCH --account=p201223
 #SBATCH --partition=cpu
 #SBATCH --qos=default
@@ -30,18 +30,18 @@ if [[ ! -d "${P_EDR_ROOT}/.git" ]]; then
   printf 'P_EDR_ROOT does not look like the repo root: %s\n' "${P_EDR_ROOT}" >&2
   exit 2
 fi
-if [[ ! -d "${DATA_RAW}" ]]; then
-  printf 'Missing raw input directory: %s\n' "${DATA_RAW}" >&2
+if [[ ! -f "${REFERENCE_DATASET}/dataset_index.json" ]]; then
+  printf 'Missing reference dataset index: %s\n' "${REFERENCE_DATASET}/dataset_index.json" >&2
   exit 2
 fi
-if ! compgen -G "${DATA_RAW%/}/*" >/dev/null; then
-  printf 'Raw input directory is empty: %s\n' "${DATA_RAW}" >&2
+if [[ ! -d "${REFERENCE_DATASET}/splits" ]]; then
+  printf 'Missing reference dataset splits: %s\n' "${REFERENCE_DATASET}/splits" >&2
   exit 2
 fi
 
-mkdir -p "${LOG_DIR}" "${REFERENCE_DATASET}" "${PIDSMAKER_EXPORT}"
+mkdir -p "${LOG_DIR}" "${PIDSMAKER_EXPORT}"
 
-CONFIG_PATH=${LOG_DIR}/meluxina_pipeline_config_${SLURM_JOB_ID:-manual}.yml
+CONFIG_PATH=${LOG_DIR}/meluxina_export_only_config_${SLURM_JOB_ID:-manual}.yml
 cat > "${CONFIG_PATH}" <<EOF
 paths:
   data_raw: ${DATA_RAW}
@@ -55,8 +55,8 @@ pidsmaker_export:
   window_size_seconds: 60
 
 steps:
-  build_reference_dataset: true
-  build_splits: true
+  build_reference_dataset: false
+  build_splits: false
   export_to_pidsmaker: true
 
 splits:
@@ -71,13 +71,12 @@ export MELUXINA_PIPELINE_CONFIG=${CONFIG_PATH}
 export PYTHONPATH=${P_EDR_ROOT}${PYTHONPATH:+:${PYTHONPATH}}
 
 printf 'P_EDR_ROOT=%s\n' "${P_EDR_ROOT}"
-printf 'DATA_RAW=%s\n' "${DATA_RAW}"
 printf 'REFERENCE_DATASET=%s\n' "${REFERENCE_DATASET}"
 printf 'PIDSMAKER_EXPORT=%s\n' "${PIDSMAKER_EXPORT}"
 printf 'MELUXINA_EXPORT_WORKERS=%s\n' "${MELUXINA_EXPORT_WORKERS}"
 printf 'MELUXINA_PIPELINE_CONFIG=%s\n' "${MELUXINA_PIPELINE_CONFIG}"
 
-: "${HPO_IMAGE:?Set HPO_IMAGE to the PIDSMaker Apptainer image}"
+: "${HPO_IMAGE:?Set HPO_IMAGE to the export Apptainer image}"
 if [[ ! -f "${HPO_IMAGE}" ]]; then
   printf 'Missing Apptainer image: %s\n' "${HPO_IMAGE}" >&2
   exit 2
@@ -95,12 +94,8 @@ export APPTAINERENV_MELUXINA_PIPELINE_CONFIG=${MELUXINA_PIPELINE_CONFIG}
 export APPTAINERENV_PYTHONPATH=${PYTHONPATH}
 mkdir -p "${APPTAINER_CACHEDIR}" "${APPTAINER_TMPDIR}"
 
-RUNNER=(
-  apptainer exec
-  --bind "${P_EDR_ROOT}:${P_EDR_ROOT}"
-  --pwd "${P_EDR_ROOT}"
-  "${HPO_IMAGE}"
-  python
-)
-
-"${RUNNER[@]}" -c 'import os; from capture_export.pipeline.run_pipeline import main; main(os.environ["MELUXINA_PIPELINE_CONFIG"])'
+apptainer exec \
+  --bind "${P_EDR_ROOT}:${P_EDR_ROOT}" \
+  --pwd "${P_EDR_ROOT}" \
+  "${HPO_IMAGE}" \
+  python -c 'import os; from capture_export.pipeline.run_pipeline import main; main(os.environ["MELUXINA_PIPELINE_CONFIG"])'

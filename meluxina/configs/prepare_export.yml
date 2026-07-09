@@ -1,0 +1,14 @@
+job:
+  script: meluxina/prepare_export.sbatch
+  account: p201223
+  partition: cpu
+  qos: default
+  cpus_per_task: 256
+  mem: 480G
+  time: 2-00:00:00
+  output: run_logs/%x-%j.out
+  error: run_logs/%x-%j.err
+
+env:
+  HPO_IMAGE: ${P_EDR_ROOT}/containers/export-prep.sif
+  MELUXINA_EXPORT_WORKERS: 4
