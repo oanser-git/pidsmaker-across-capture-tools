@@ -1,0 +1,13 @@
+job:
+  script: meluxina/cross_account_read_smoke.sbatch
+  account: p201219
+  partition: cpu
+  qos: test
+  cpus_per_task: 1
+  mem: 2G
+  time: 00:05:00
+  output: run_logs/%x-%j.out
+  error: run_logs/%x-%j.err
+
+env:
+  SMOKE_SOURCE_ROOT: /mnt/tier2/project/p201223/pidsmaker-across-capture-tools
