@@ -140,7 +140,7 @@ def build_command(sweep: Dict[str, Any], run: Dict[str, Any], args: argparse.Nam
     image = Path(image_env).resolve()
     repo_root = Path(str(sweep["repo_root"])).resolve()
     artifact_root = Path(str(os.environ.get("MELUXINA_PIDSMAKER_ARTIFACT_ROOT") or sweep["artifact_root"])).resolve()
-    export_root = Path(variables["ORANGE_EXPORT_ROOT"])
+    export_root = Path(str(run.get("export_root") or sweep.get("export_root") or variables["ORANGE_EXPORT_ROOT"])).resolve()
     phase = args.phase or "run"
     run_name = safe_name(str(run["name"]))
     artifact = safe_name("{}_{}_{}".format(sweep["name"], run_name, phase), max_length=200)
@@ -200,6 +200,9 @@ def build_command(sweep: Dict[str, Any], run: Dict[str, Any], args: argparse.Nam
         "method": str(sweep["method"]),
         "dataset": str(sweep["dataset"]),
         "epochs": int(sweep.get("epochs", 12)),
+        "orange_export_root": str(export_root),
+        "export_variant": run.get("export_variant"),
+        "export_window_size_seconds": run.get("export_window_size_seconds"),
         "overrides": run.get("overrides") or {},
         "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
         "slurm_array_task_id": os.environ.get("SLURM_ARRAY_TASK_ID"),
@@ -229,7 +232,9 @@ def run_command(command: List[str], meta: Dict[str, Any], results_dir: Path) -> 
     print("$ " + " ".join(shlex.quote(part) for part in command), flush=True)
     started = time.time()
     env = os.environ.copy()
-    env.setdefault("APPTAINERENV_ORANGE_EXPORT_ROOT", default_vars()["ORANGE_EXPORT_ROOT"])
+    orange_export_root = str(meta.get("orange_export_root") or default_vars()["ORANGE_EXPORT_ROOT"])
+    env["ORANGE_EXPORT_ROOT"] = orange_export_root
+    env["APPTAINERENV_ORANGE_EXPORT_ROOT"] = orange_export_root
     env.setdefault("APPTAINERENV_NLTK_DATA", "/home/artifacts/nltk_data:/opt/nltk_data")
     env.setdefault("APPTAINERENV_MPLCONFIGDIR", "/home/artifacts/matplotlib")
     env.setdefault("APPTAINERENV_XDG_CACHE_HOME", "/home/artifacts/cache")

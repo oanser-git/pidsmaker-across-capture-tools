@@ -22,6 +22,7 @@ HPO_IMAGE=${HPO_IMAGE:-${P_EDR_ROOT}/containers/export-prep.sif}
 MELUXINA_IMAGE_SOURCE=${MELUXINA_IMAGE_SOURCE:-docker://pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime}
 MELUXINA_AUTO_BUILD_IMAGE=${MELUXINA_AUTO_BUILD_IMAGE:-1}
 MELUXINA_EXPORT_WORKERS=${MELUXINA_EXPORT_WORKERS:-16}
+PIDSMAKER_EXPORT_WINDOW_SIZE_SECONDS=${PIDSMAKER_EXPORT_WINDOW_SIZE_SECONDS:-60}
 
 DATA_RAW=${DATA_RAW:-${P_EDR_ROOT}/capture_export/data-raw}
 REFERENCE_DATASET=${REFERENCE_DATASET:-${P_EDR_ROOT}/capture_export/reference_dataset}
@@ -43,6 +44,18 @@ fi
 
 mkdir -p "${LOG_DIR}" "${PIDSMAKER_EXPORT}"
 
+TOOLS_YAML=""
+if [[ -n "${MELUXINA_EXPORT_TOOLS:-}" ]]; then
+  TOOLS_YAML="  tools:"
+  IFS=',' read -ra EXPORT_TOOLS <<< "${MELUXINA_EXPORT_TOOLS}"
+  for TOOL in "${EXPORT_TOOLS[@]}"; do
+    TOOL=$(printf '%s' "${TOOL}" | xargs)
+    if [[ -n "${TOOL}" ]]; then
+      TOOLS_YAML+=$'\n'"    - ${TOOL}"
+    fi
+  done
+fi
+
 CONFIG_PATH=${LOG_DIR}/meluxina_export_only_config_${SLURM_JOB_ID:-manual}.yml
 cat > "${CONFIG_PATH}" <<EOF
 paths:
@@ -54,7 +67,8 @@ processing:
   workers: ${MELUXINA_EXPORT_WORKERS}
 
 pidsmaker_export:
-  window_size_seconds: 60
+  window_size_seconds: ${PIDSMAKER_EXPORT_WINDOW_SIZE_SECONDS}
+${TOOLS_YAML}
 
 steps:
   build_reference_dataset: false
@@ -79,6 +93,8 @@ printf 'HPO_IMAGE=%s\n' "${HPO_IMAGE}"
 printf 'MELUXINA_IMAGE_SOURCE=%s\n' "${MELUXINA_IMAGE_SOURCE}"
 printf 'MELUXINA_AUTO_BUILD_IMAGE=%s\n' "${MELUXINA_AUTO_BUILD_IMAGE}"
 printf 'MELUXINA_EXPORT_WORKERS=%s\n' "${MELUXINA_EXPORT_WORKERS}"
+printf 'PIDSMAKER_EXPORT_WINDOW_SIZE_SECONDS=%s\n' "${PIDSMAKER_EXPORT_WINDOW_SIZE_SECONDS}"
+printf 'MELUXINA_EXPORT_TOOLS=%s\n' "${MELUXINA_EXPORT_TOOLS:-all}"
 printf 'MELUXINA_PIPELINE_CONFIG=%s\n' "${MELUXINA_PIPELINE_CONFIG}"
 
 source "${SCRIPT_DIR}/ensure_export_apptainer_image.sh"
