@@ -1,5 +1,5 @@
 job:
-  script: meluxina/pidsmaker/build_image.sbatch
+  script: meluxina/pidsmaker/build_pidsmaker_image.sbatch
   account: p201223
   partition: cpu
   qos: dev
