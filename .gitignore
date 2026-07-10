@@ -22,6 +22,7 @@ pidsmaker_experiments/asha_runs/
 pidsmaker_experiments/checkpoints/
 pidsmaker_experiments/hpo_artifact_archives/
 meluxina/pidsmaker/artifacts/
+meluxina/pidsmaker/asha_runs/
 meluxina/pidsmaker/results/
 meluxina/pidsmaker/checkpoints/
 meluxina/pidsmaker/local/
