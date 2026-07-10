@@ -7,13 +7,8 @@ From: pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
     export PYTHONUNBUFFERED=1
 
 %post
-    export DEBIAN_FRONTEND=noninteractive
     export PATH=/opt/conda/bin:$PATH
     export NLTK_DATA=/opt/nltk_data
-
-    apt-get update
-    apt-get install -y --no-install-recommends ca-certificates graphviz git
-    rm -rf /var/lib/apt/lists/*
 
     python -m pip install --no-cache-dir --upgrade pip
     python -m pip install --no-cache-dir \
