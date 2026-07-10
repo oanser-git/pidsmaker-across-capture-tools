@@ -1,0 +1,16 @@
+job:
+  script: meluxina/pidsmaker/build_image.sbatch
+  account: p201223
+  partition: cpu
+  qos: dev
+  cpus_per_task: 16
+  mem: 96G
+  time: 06:00:00
+  output: run_logs/%x-%j.out
+  error: run_logs/%x-%j.err
+  job_name: pids_image
+
+env:
+  MELUXINA_PIDSMAKER_IMAGE: ${P_EDR_ROOT}/containers/pidsmaker-pids.sif
+  MELUXINA_PIDSMAKER_AUTO_BUILD_IMAGE: 1
+  MELUXINA_PIDSMAKER_VERIFY_IMAGE: 1

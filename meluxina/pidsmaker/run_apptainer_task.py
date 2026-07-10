@@ -230,7 +230,7 @@ def run_command(command: List[str], meta: Dict[str, Any], results_dir: Path) -> 
     started = time.time()
     env = os.environ.copy()
     env.setdefault("APPTAINERENV_ORANGE_EXPORT_ROOT", default_vars()["ORANGE_EXPORT_ROOT"])
-    env.setdefault("APPTAINERENV_NLTK_DATA", "/home/artifacts/nltk_data")
+    env.setdefault("APPTAINERENV_NLTK_DATA", "/home/artifacts/nltk_data:/opt/nltk_data")
     env.setdefault("APPTAINERENV_MPLCONFIGDIR", "/home/artifacts/matplotlib")
     env.setdefault("APPTAINERENV_XDG_CACHE_HOME", "/home/artifacts/cache")
     proc = subprocess.Popen(

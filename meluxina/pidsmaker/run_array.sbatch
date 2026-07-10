@@ -21,6 +21,7 @@ fi
 
 MELUXINA_PIDSMAKER_APPTAINER_MODULE=${MELUXINA_PIDSMAKER_APPTAINER_MODULE:-Apptainer/1.4.2-GCCcore-14.2.0}
 MELUXINA_PIDSMAKER_IMAGE=${MELUXINA_PIDSMAKER_IMAGE:-${HPO_IMAGE:-${P_EDR_ROOT}/containers/pidsmaker-pids.sif}}
+MELUXINA_PIDSMAKER_AUTO_BUILD_IMAGE=${MELUXINA_PIDSMAKER_AUTO_BUILD_IMAGE:-1}
 ORANGE_EXPORT_ROOT=${ORANGE_EXPORT_ROOT:-/mnt/tier2/project/p201223/pidsmaker-across-capture-tools/capture_export/pidsmaker_export}
 LOG_DIR=${LOG_DIR:-${P_EDR_ROOT}/run_logs}
 
@@ -34,25 +35,16 @@ if [[ ! -f "${ORANGE_EXPORT_ROOT}/export_manifest.json" ]]; then
   printf 'Missing Orange export manifest: %s\n' "${ORANGE_EXPORT_ROOT}/export_manifest.json" >&2
   exit 2
 fi
-if [[ ! -f "${MELUXINA_PIDSMAKER_IMAGE}" ]]; then
-  printf 'Missing PIDSMaker Apptainer image: %s\n' "${MELUXINA_PIDSMAKER_IMAGE}" >&2
-  exit 2
-fi
-
-if [[ -n "${MELUXINA_PIDSMAKER_APPTAINER_MODULE:-}" ]]; then
-  if ! command -v module >/dev/null 2>&1; then
-    printf 'MELUXINA_PIDSMAKER_APPTAINER_MODULE is set, but module is unavailable\n' >&2
-    exit 2
-  fi
-  module load "${MELUXINA_PIDSMAKER_APPTAINER_MODULE}"
-fi
+export MELUXINA_PIDSMAKER_IMAGE
+export MELUXINA_PIDSMAKER_AUTO_BUILD_IMAGE
+source "${P_EDR_ROOT}/meluxina/pidsmaker/ensure_pidsmaker_apptainer_image.sh"
+ensure_pidsmaker_apptainer_image
 
 NODE_TMP=${MELUXINA_PIDSMAKER_NODE_TMPDIR:-${TMPDIR:-/tmp}}
 export APPTAINER_CACHEDIR=${APPTAINER_CACHEDIR:-${NODE_TMP%/}/apptainer-cache-${USER:-user}}
 export APPTAINER_TMPDIR=${APPTAINER_TMPDIR:-${NODE_TMP%/}/apptainer-tmp-${USER:-user}}
 export ORANGE_EXPORT_ROOT
 export P_EDR_ROOT
-export MELUXINA_PIDSMAKER_IMAGE
 export APPTAINERENV_ORANGE_EXPORT_ROOT=${ORANGE_EXPORT_ROOT}
 export APPTAINERENV_PYTHONUNBUFFERED=1
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-${OMP_NUM_THREADS:-1}}
