@@ -1,4 +1,4 @@
 [submodule "external/PIDSMaker"]
 	path = external/PIDSMaker
-	url = https://github.com/ubc-provenance/PIDSMaker.git
+	url = git@github.com:oanser-git/PIDSMaker.git
 	branch = main

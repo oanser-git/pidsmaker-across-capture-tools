@@ -1,0 +1,12 @@
+name: orange_recap_raw_kairos_native_default
+repo_root: ${P_EDR_ROOT}/external/PIDSMaker
+artifact_root: ${P_EDR_ROOT}/meluxina/pidsmaker/artifacts/kairos
+results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/results/kairos_recap_raw_native_default
+method: kairos
+dataset: ORANGE_RECAP_RAW
+epochs: 12
+runs:
+  - name: native_seed0
+    overrides:
+      training.seed: 0
+      featurization.seed: 0

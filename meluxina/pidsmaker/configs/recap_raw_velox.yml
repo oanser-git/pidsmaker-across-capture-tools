@@ -1,0 +1,19 @@
+job:
+  script: meluxina/pidsmaker/run_array.sbatch
+  account: p201223
+  partition: gpu
+  qos: default
+  cpus_per_task: 7
+  mem: 180G
+  time: 04:00:00
+  output: run_logs/%x-%A_%a.out
+  error: run_logs/%x-%A_%a.err
+  job_name: pids_velox_recap
+  extra_args:
+    - --gres=gpu:1
+    - --array=0-0
+
+env:
+  MELUXINA_PIDSMAKER_SWEEP: ${P_EDR_ROOT}/meluxina/pidsmaker/sweeps/recap_raw_velox_default.yml
+  MELUXINA_PIDSMAKER_IMAGE: ${P_EDR_ROOT}/containers/pidsmaker-pids.sif
+  ORANGE_EXPORT_ROOT: /mnt/tier2/project/p201223/pidsmaker-across-capture-tools/capture_export/pidsmaker_export

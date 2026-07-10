@@ -21,6 +21,13 @@ pidsmaker_experiments/hpo_results/
 pidsmaker_experiments/asha_runs/
 pidsmaker_experiments/checkpoints/
 pidsmaker_experiments/hpo_artifact_archives/
+meluxina/pidsmaker/artifacts/
+meluxina/pidsmaker/results/
+meluxina/pidsmaker/checkpoints/
+meluxina/pidsmaker/local/
+meluxina/**/*smoke*.yml
+meluxina/**/*smoke*.yaml
+meluxina/**/*smoke*.sbatch
 
 # HPC/editor noise
 logs/
