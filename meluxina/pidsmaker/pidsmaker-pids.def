@@ -29,6 +29,7 @@ From: pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
         gensim==4.3.1 \
         pytz==2024.1 \
         pandas==2.2.2 \
+        psycopg2-binary==2.9.9 \
         PyYAML==6.0.2 \
         yacs==0.1.8 \
         gdown==5.2.0
@@ -52,6 +53,7 @@ PY
     python - <<'PY'
 import networkx
 import pandas
+import psycopg2
 import sklearn
 import torch
 import torch_geometric

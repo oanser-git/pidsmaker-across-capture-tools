@@ -73,6 +73,7 @@ ensure_pidsmaker_apptainer_image() {
     apptainer exec "${MELUXINA_PIDSMAKER_IMAGE}" python - <<'PY'
 import networkx
 import pandas
+import psycopg2
 import sklearn
 import torch
 import torch_geometric
