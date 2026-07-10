@@ -1,0 +1,15 @@
+job:
+  script: meluxina/pidsmaker/run_asha_controller.sbatch
+  account: p201223
+  partition: cpu
+  qos: default
+  cpus_per_task: 1
+  mem: 4G
+  time: 2-00:00:00
+  output: run_logs/%x-%j.out
+  error: run_logs/%x-%j.err
+  job_name: pids_asha_magic
+
+env:
+  MELUXINA_PIDSMAKER_ASHA_CONFIG: ${P_EDR_ROOT}/meluxina/pidsmaker/asha/magic_recap_raw_100_asha.yml
+  ORANGE_EXPORT_ROOT: /mnt/tier2/project/p201223/pidsmaker-across-capture-tools/capture_export/pidsmaker_export

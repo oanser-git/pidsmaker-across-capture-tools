@@ -1,0 +1,42 @@
+name: velox_recap_raw_100_asha
+results_root: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/velox_recap_raw_100
+metric: adp_score
+mode: maximize
+promotion_policy: sync
+reduction_factor: 3
+poll_seconds: 120
+array_concurrency: 81
+sbatch_script: ${P_EDR_ROOT}/meluxina/pidsmaker/run_array.sbatch
+sbatch_options:
+  account: p201223
+  partition: gpu
+  qos: default
+  mem: 180G
+  gres: gpu:1
+  cpus_per_task: 7
+  output: ${P_EDR_ROOT}/run_logs/%x-%A_%a.out
+  error: ${P_EDR_ROOT}/run_logs/%x-%A_%a.err
+export_env:
+  MELUXINA_PIDSMAKER_AUTO_BUILD_IMAGE: 1
+rungs:
+- name: r0_e1
+  sweep: ${P_EDR_ROOT}/meluxina/pidsmaker/sweeps/asha/velox_recap_raw_100_asha_r0_e1.yml
+  results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/velox_recap_raw_100/r0_e1
+  tag: velox_recap_raw100_r0_e1
+  job_name: velox_recap_raw100_r0
+  sbatch_options:
+    time: 00:45:00
+- name: r1_e3
+  sweep: ${P_EDR_ROOT}/meluxina/pidsmaker/sweeps/asha/velox_recap_raw_100_asha_r1_e3.yml
+  results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/velox_recap_raw_100/r1_e3
+  tag: velox_recap_raw100_r1_e3
+  job_name: velox_recap_raw100_r1
+  sbatch_options:
+    time: 01:20:00
+- name: r2_e9
+  sweep: ${P_EDR_ROOT}/meluxina/pidsmaker/sweeps/asha/velox_recap_raw_100_asha_r2_e9.yml
+  results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/velox_recap_raw_100/r2_e9
+  tag: velox_recap_raw100_r2_e9
+  job_name: velox_recap_raw100_r2
+  sbatch_options:
+    time: 03:30:00
