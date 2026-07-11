@@ -1,0 +1,20 @@
+job:
+  script: meluxina/pidsmaker/derive_window_exports.sbatch
+  account: p201223
+  partition: cpu
+  qos: default
+  cpus_per_task: 16
+  mem: 128G
+  time: 02:00:00
+  output: run_logs/%x-%j.out
+  error: run_logs/%x-%j.err
+  job_name: derive_recap_windows
+
+env:
+  MELUXINA_PIDSMAKER_IMAGE: ${P_EDR_ROOT}/containers/pidsmaker-pids-psycopg2.sif
+  MELUXINA_PIDSMAKER_AUTO_BUILD_IMAGE: 0
+  MELUXINA_PIDSMAKER_VERIFY_IMAGE: 1
+  PIDSMAKER_DERIVE_SOURCE_ROOT: ${P_EDR_ROOT}/capture_export/pidsmaker_export
+  PIDSMAKER_DERIVE_OUTPUT_BASE: ${P_EDR_ROOT}/capture_export/pidsmaker_export_variants/recap_raw
+  PIDSMAKER_DERIVE_TOOL: recap
+  PIDSMAKER_DERIVE_WINDOW_SIZE_SECONDS: 120|240
