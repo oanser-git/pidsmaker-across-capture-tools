@@ -1,12 +1,14 @@
-name: orange_recap_raw_magic_100_asha_r2_e9
+name: orange_recap_raw_magic_100_asha_r3_e9
 repo_root: ${P_EDR_ROOT}/external/PIDSMaker
 artifact_root: ${P_EDR_ROOT}/meluxina/pidsmaker/artifacts/asha/magic
-results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/results/asha/orange_recap_raw_magic_100_asha_r2_e9
+results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/results/asha/orange_recap_raw_magic_100_asha_r3_e9
+checkpoint_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/magic_recap_raw_100/r3_e9_checkpoints
 selection_metric: adp_score
 completion_metric: adp_score
 method: magic
 dataset: ORANGE_RECAP_RAW
 epochs: 9
+resume_checkpoint_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/magic_recap_raw_100/r2_e4_checkpoints
 runs:
 - name: c000_win1m_lr0p001_wd0p0005_dim64_mask0p5_seed0
   export_variant: window_1m

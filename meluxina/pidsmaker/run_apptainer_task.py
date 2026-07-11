@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import shlex
 import subprocess
 import sys
@@ -146,11 +147,29 @@ def build_command(sweep: Dict[str, Any], run: Dict[str, Any], args: argparse.Nam
     artifact = safe_name("{}_{}_{}".format(sweep["name"], run_name, phase), max_length=200)
 
     artifact_root.mkdir(parents=True, exist_ok=True)
-    (artifact_root / "nltk_data").mkdir(parents=True, exist_ok=True)
-    (artifact_root / "matplotlib").mkdir(parents=True, exist_ok=True)
-    (artifact_root / "cache").mkdir(parents=True, exist_ok=True)
-    apptainer_home = artifact_root / "apptainer_home"
+    task_cache_root = artifact_root / "_task_cache" / artifact
+    nltk_data = task_cache_root / "nltk_data"
+    matplotlib_config = task_cache_root / "matplotlib"
+    xdg_cache = task_cache_root / "cache"
+    apptainer_home = task_cache_root / "apptainer_home"
+    nltk_data.mkdir(parents=True, exist_ok=True)
+    matplotlib_config.mkdir(parents=True, exist_ok=True)
+    xdg_cache.mkdir(parents=True, exist_ok=True)
     apptainer_home.mkdir(parents=True, exist_ok=True)
+
+    checkpoint_dir = Path(str(sweep["checkpoint_dir"])).resolve() if sweep.get("checkpoint_dir") else None
+    resume_checkpoint_dir = (
+        Path(str(sweep["resume_checkpoint_dir"])).resolve() if sweep.get("resume_checkpoint_dir") else None
+    )
+    host_save_checkpoint = task_cache_root / "training_checkpoint.pt" if checkpoint_dir else None
+    persist_checkpoint = checkpoint_dir / f"{run_name}.pt" if checkpoint_dir else None
+    host_resume_checkpoint = None
+    if resume_checkpoint_dir:
+        source_checkpoint = resume_checkpoint_dir / f"{run_name}.pt"
+        if not source_checkpoint.exists():
+            raise SystemExit(f"Missing resume checkpoint for {run_name}: {source_checkpoint}")
+        host_resume_checkpoint = task_cache_root / "resume_checkpoint.pt"
+        shutil.copy2(source_checkpoint, host_resume_checkpoint)
 
     inner = [
         "python",
@@ -197,6 +216,19 @@ def build_command(sweep: Dict[str, Any], run: Dict[str, Any], args: argparse.Nam
         "phase": phase,
         "artifact": artifact,
         "artifact_dir": str(artifact_root / artifact),
+        "container_nltk_data": "/home/artifacts/_task_cache/{}/nltk_data".format(artifact),
+        "container_matplotlib_config": "/home/artifacts/_task_cache/{}/matplotlib".format(artifact),
+        "container_xdg_cache": "/home/artifacts/_task_cache/{}/cache".format(artifact),
+        "container_save_checkpoint": "/home/artifacts/_task_cache/{}/training_checkpoint.pt".format(artifact)
+        if host_save_checkpoint
+        else None,
+        "container_resume_checkpoint": "/home/artifacts/_task_cache/{}/resume_checkpoint.pt".format(artifact)
+        if host_resume_checkpoint
+        else None,
+        "host_save_checkpoint": str(host_save_checkpoint) if host_save_checkpoint else None,
+        "persist_checkpoint": str(persist_checkpoint) if persist_checkpoint else None,
+        "host_resume_checkpoint": str(host_resume_checkpoint) if host_resume_checkpoint else None,
+        "resume_checkpoint": str(resume_checkpoint_dir / f"{run_name}.pt") if resume_checkpoint_dir else None,
         "method": str(sweep["method"]),
         "dataset": str(sweep["dataset"]),
         "epochs": int(sweep.get("epochs", 12)),
@@ -235,9 +267,13 @@ def run_command(command: List[str], meta: Dict[str, Any], results_dir: Path) -> 
     orange_export_root = str(meta.get("orange_export_root") or default_vars()["ORANGE_EXPORT_ROOT"])
     env["ORANGE_EXPORT_ROOT"] = orange_export_root
     env["APPTAINERENV_ORANGE_EXPORT_ROOT"] = orange_export_root
-    env.setdefault("APPTAINERENV_NLTK_DATA", "/home/artifacts/nltk_data:/opt/nltk_data")
-    env.setdefault("APPTAINERENV_MPLCONFIGDIR", "/home/artifacts/matplotlib")
-    env.setdefault("APPTAINERENV_XDG_CACHE_HOME", "/home/artifacts/cache")
+    env["APPTAINERENV_NLTK_DATA"] = "{}:/home/artifacts/nltk_data:/opt/nltk_data".format(meta["container_nltk_data"])
+    env["APPTAINERENV_MPLCONFIGDIR"] = str(meta["container_matplotlib_config"])
+    env["APPTAINERENV_XDG_CACHE_HOME"] = str(meta["container_xdg_cache"])
+    if meta.get("container_save_checkpoint"):
+        env["APPTAINERENV_PIDSMAKER_SAVE_CHECKPOINT"] = str(meta["container_save_checkpoint"])
+    if meta.get("container_resume_checkpoint"):
+        env["APPTAINERENV_PIDSMAKER_RESUME_CHECKPOINT"] = str(meta["container_resume_checkpoint"])
     proc = subprocess.Popen(
         command,
         stdout=subprocess.PIPE,
@@ -264,9 +300,31 @@ def run_command(command: List[str], meta: Dict[str, Any], results_dir: Path) -> 
     if graceful_finished:
         exit_code = 0
 
+    checkpoint_saved = False
+    checkpoint_error = None
+    if exit_code == 0 and meta.get("persist_checkpoint"):
+        host_checkpoint = Path(str(meta["host_save_checkpoint"]))
+        persist_checkpoint = Path(str(meta["persist_checkpoint"]))
+        if host_checkpoint.exists():
+            persist_checkpoint.parent.mkdir(parents=True, exist_ok=True)
+            tmp_checkpoint = persist_checkpoint.with_name(f".{persist_checkpoint.name}.tmp.{os.getpid()}")
+            shutil.copy2(host_checkpoint, tmp_checkpoint)
+            os.replace(str(tmp_checkpoint), str(persist_checkpoint))
+            checkpoint_saved = True
+        else:
+            checkpoint_error = f"PIDSMaker did not write checkpoint: {host_checkpoint}"
+            exit_code = 1
+
     row = {**meta, "exit_code": exit_code, "duration_sec": round(time.time() - started, 1)}
     row.update(parse_metrics("".join(lines)))
     row["oom"] = bool(row.get("oom")) or exit_code == 137
+    if meta.get("persist_checkpoint"):
+        row["checkpoint_saved"] = checkpoint_saved
+        row["checkpoint_path"] = meta.get("persist_checkpoint")
+    if meta.get("resume_checkpoint"):
+        row["resume_checkpoint_path"] = meta.get("resume_checkpoint")
+    if checkpoint_error:
+        row["checkpoint_error"] = checkpoint_error
 
     results_dir.mkdir(parents=True, exist_ok=True)
     result_path = results_dir / "{}_{}.json".format(meta["phase"], meta["name"])

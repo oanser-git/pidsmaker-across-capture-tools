@@ -1,12 +1,14 @@
-name: orange_recap_raw_orthrus_100_asha_r2_e9
+name: orange_recap_raw_orthrus_100_asha_r1_e2
 repo_root: ${P_EDR_ROOT}/external/PIDSMaker
 artifact_root: ${P_EDR_ROOT}/meluxina/pidsmaker/artifacts/asha/orthrus
-results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/results/asha/orange_recap_raw_orthrus_100_asha_r2_e9
+results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/results/asha/orange_recap_raw_orthrus_100_asha_r1_e2
+checkpoint_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/orthrus_recap_raw_100/r1_e2_checkpoints
 selection_metric: adp_score
 completion_metric: adp_score
 method: orthrus
 dataset: ORANGE_RECAP_RAW
-epochs: 9
+epochs: 2
+resume_checkpoint_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/orthrus_recap_raw_100/r0_e1_checkpoints
 runs:
 - name: c000_lr1em05_wd1em05_capdefault_batch1024_neigh20_seed0
   overrides:

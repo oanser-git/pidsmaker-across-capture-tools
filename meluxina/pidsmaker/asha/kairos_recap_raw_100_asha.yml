@@ -3,9 +3,14 @@ results_root: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/kairos_recap_raw_100
 metric: adp_score
 mode: maximize
 promotion_policy: sync
-reduction_factor: 3
+reduction_factor: 2
 poll_seconds: 120
-array_concurrency: 81
+submit_accounts:
+- p201223
+- p201219
+submit_chunk_size: 100
+max_submit_jobs_per_account: 100
+array_concurrency: 100
 sbatch_script: ${P_EDR_ROOT}/meluxina/pidsmaker/run_array.sbatch
 sbatch_options:
   account: p201223
@@ -17,6 +22,7 @@ sbatch_options:
   output: ${P_EDR_ROOT}/run_logs/%x-%A_%a.out
   error: ${P_EDR_ROOT}/run_logs/%x-%A_%a.err
 export_env:
+  MELUXINA_PIDSMAKER_IMAGE: ${P_EDR_ROOT}/containers/pidsmaker-pids-psycopg2.sif
   MELUXINA_PIDSMAKER_AUTO_BUILD_IMAGE: 1
 rungs:
 - name: r0_e1
@@ -26,17 +32,24 @@ rungs:
   job_name: kairos_recap_raw100_r0
   sbatch_options:
     time: 01:00:00
-- name: r1_e3
-  sweep: ${P_EDR_ROOT}/meluxina/pidsmaker/sweeps/asha/kairos_recap_raw_100_asha_r1_e3.yml
-  results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/kairos_recap_raw_100/r1_e3
-  tag: kairos_recap_raw100_r1_e3
+- name: r1_e2
+  sweep: ${P_EDR_ROOT}/meluxina/pidsmaker/sweeps/asha/kairos_recap_raw_100_asha_r1_e2.yml
+  results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/kairos_recap_raw_100/r1_e2
+  tag: kairos_recap_raw100_r1_e2
   job_name: kairos_recap_raw100_r1
   sbatch_options:
-    time: 02:00:00
-- name: r2_e9
-  sweep: ${P_EDR_ROOT}/meluxina/pidsmaker/sweeps/asha/kairos_recap_raw_100_asha_r2_e9.yml
-  results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/kairos_recap_raw_100/r2_e9
-  tag: kairos_recap_raw100_r2_e9
+    time: 01:30:00
+- name: r2_e4
+  sweep: ${P_EDR_ROOT}/meluxina/pidsmaker/sweeps/asha/kairos_recap_raw_100_asha_r2_e4.yml
+  results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/kairos_recap_raw_100/r2_e4
+  tag: kairos_recap_raw100_r2_e4
   job_name: kairos_recap_raw100_r2
+  sbatch_options:
+    time: 03:00:00
+- name: r3_e9
+  sweep: ${P_EDR_ROOT}/meluxina/pidsmaker/sweeps/asha/kairos_recap_raw_100_asha_r3_e9.yml
+  results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/kairos_recap_raw_100/r3_e9
+  tag: kairos_recap_raw100_r3_e9
+  job_name: kairos_recap_raw100_r3
   sbatch_options:
     time: 06:00:00

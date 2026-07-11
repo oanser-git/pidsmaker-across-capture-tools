@@ -1,12 +1,14 @@
-name: orange_recap_raw_velox_100_asha_r2_e9
+name: orange_recap_raw_velox_100_asha_r3_e9
 repo_root: ${P_EDR_ROOT}/external/PIDSMaker
 artifact_root: ${P_EDR_ROOT}/meluxina/pidsmaker/artifacts/asha/velox
-results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/results/asha/orange_recap_raw_velox_100_asha_r2_e9
+results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/results/asha/orange_recap_raw_velox_100_asha_r3_e9
+checkpoint_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/velox_recap_raw_100/r3_e9_checkpoints
 selection_metric: adp_score
 completion_metric: adp_score
 method: velox
 dataset: ORANGE_RECAP_RAW
 epochs: 9
+resume_checkpoint_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/velox_recap_raw_100/r2_e4_checkpoints
 runs:
 - name: c000_lr0p0001_wd1em05_dim128_emb128_batch1024_seed0
   overrides:

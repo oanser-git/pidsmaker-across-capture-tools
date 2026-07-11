@@ -2,7 +2,9 @@
 """ASHA controller for MeluXina PIDSMaker Slurm arrays."""
 
 import argparse
+from contextlib import contextmanager
 from datetime import datetime, timezone
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -11,7 +13,7 @@ import shlex
 import subprocess
 import sys
 import time
-from typing import Any
+from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 
@@ -22,6 +24,11 @@ DEFAULT_METRIC = "adp_score"
 DEFAULT_MODE = "maximize"
 VALID_MODES = {"minimize", "maximize"}
 VALID_PROMOTION_POLICIES = {"async", "sync"}
+ACTIVE_SLURM_STATES = {"PENDING", "RUNNING", "CONFIGURING", "COMPLETING", "SUSPENDED", "REQUEUED", "RESIZING"}
+
+
+class SubmitLimitReached(RuntimeError):
+    pass
 
 
 class RungConfig:
@@ -33,9 +40,12 @@ class RungConfig:
         tag: str,
         job_name: str,
         sbatch_script: Path,
-        array_concurrency: int | None,
-        sbatch_options: dict[str, Any],
-        export_env: dict[str, Any],
+        array_concurrency: Optional[int],
+        submit_accounts: List[str],
+        submit_chunk_size: Optional[int],
+        max_submit_jobs_per_account: Optional[int],
+        sbatch_options: Dict[str, Any],
+        export_env: Dict[str, Any],
     ) -> None:
         self.name = name
         self.sweep = sweep
@@ -44,6 +54,9 @@ class RungConfig:
         self.job_name = job_name
         self.sbatch_script = sbatch_script
         self.array_concurrency = array_concurrency
+        self.submit_accounts = submit_accounts
+        self.submit_chunk_size = submit_chunk_size
+        self.max_submit_jobs_per_account = max_submit_jobs_per_account
         self.sbatch_options = sbatch_options
         self.export_env = export_env
 
@@ -60,8 +73,8 @@ class AshaConfig:
         reduction_factor: int,
         promotion_policy: str,
         poll_seconds: int,
-        start_trials: list[str] | None,
-        rungs: list[RungConfig],
+        start_trials: Optional[List[str]],
+        rungs: List[RungConfig],
     ) -> None:
         self.name = name
         self.config_path = config_path
@@ -84,7 +97,7 @@ def workspace_root() -> Path:
     return Path(os.environ.get("P_EDR_ROOT", Path(__file__).resolve().parents[2])).resolve()
 
 
-def default_vars() -> dict[str, str]:
+def default_vars() -> Dict[str, str]:
     root = workspace_root()
     export_root = Path(
         os.environ.get(
@@ -95,7 +108,7 @@ def default_vars() -> dict[str, str]:
     return {"P_EDR_ROOT": str(root), "ORANGE_EXPORT_ROOT": str(export_root)}
 
 
-def expand(value: Any, variables: dict[str, str]) -> Any:
+def expand(value: Any, variables: Dict[str, str]) -> Any:
     if isinstance(value, str):
         for key, replacement in variables.items():
             value = value.replace("${" + key + "}", replacement)
@@ -106,7 +119,7 @@ def expand(value: Any, variables: dict[str, str]) -> Any:
     return value
 
 
-def load_yaml(path: Path) -> dict[str, Any]:
+def load_yaml(path: Path) -> Dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         payload = yaml.safe_load(handle) or {}
     if not isinstance(payload, dict):
@@ -118,11 +131,11 @@ def safe_name(value: str, max_length: int = 80) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", value).strip("_.-")[:max_length]
 
 
-def shell_join(command: list[Any]) -> str:
+def shell_join(command: List[Any]) -> str:
     return " ".join(shlex.quote(str(part)) for part in command)
 
 
-def as_list(value: Any) -> list[Any]:
+def as_list(value: Any) -> List[Any]:
     if value is None:
         return []
     if isinstance(value, list):
@@ -137,7 +150,7 @@ def resolve_path(value: Any, base: Path) -> Path:
     return (base / path).resolve()
 
 
-def parse_array_limit(value: Any) -> int | None:
+def parse_array_limit(value: Any) -> Optional[int]:
     if value in (None, ""):
         return None
     limit = int(value)
@@ -146,7 +159,21 @@ def parse_array_limit(value: Any) -> int | None:
     return limit
 
 
-def array_spec(indices: list[int], concurrency: int | None) -> str:
+def parse_positive_int(value: Any, name: str) -> Optional[int]:
+    if value in (None, ""):
+        return None
+    parsed = int(value)
+    if parsed <= 0:
+        raise ValueError(f"{name} must be positive")
+    return parsed
+
+
+def parse_accounts(value: Any) -> List[str]:
+    accounts = [str(item) for item in as_list(value) if str(item)]
+    return accounts
+
+
+def array_spec(indices: List[int], concurrency: Optional[int]) -> str:
     if not indices:
         raise ValueError("Cannot build Slurm array spec with no indices")
     sorted_indices = sorted(indices)
@@ -167,7 +194,7 @@ def array_spec(indices: list[int], concurrency: int | None) -> str:
     return spec
 
 
-def load_sweep_runs(sweep_path: Path) -> list[dict[str, Any]]:
+def load_sweep_runs(sweep_path: Path) -> List[Dict[str, Any]]:
     sweep = expand(load_yaml(sweep_path), default_vars())
     runs = list(sweep.get("runs") or [])
     for index, run in enumerate(runs):
@@ -177,13 +204,16 @@ def load_sweep_runs(sweep_path: Path) -> list[dict[str, Any]]:
 
 
 def build_rung_config(
-    raw: dict[str, Any],
+    raw: Dict[str, Any],
     config_dir: Path,
     results_root: Path,
     default_sbatch_script: Path,
-    default_array_concurrency: int | None,
-    default_sbatch_options: dict[str, Any],
-    default_export_env: dict[str, Any],
+    default_array_concurrency: Optional[int],
+    default_submit_accounts: List[str],
+    default_submit_chunk_size: Optional[int],
+    default_max_submit_jobs_per_account: Optional[int],
+    default_sbatch_options: Dict[str, Any],
+    default_export_env: Dict[str, Any],
 ) -> RungConfig:
     name = safe_name(str(raw["name"]))
     sweep = resolve_path(raw["sweep"], config_dir)
@@ -197,7 +227,28 @@ def build_rung_config(
     sbatch_options.update(dict(raw.get("sbatch_options") or {}))
     export_env = dict(default_export_env)
     export_env.update(dict(raw.get("export_env") or {}))
-    return RungConfig(name, sweep, results_dir, tag, job_name, sbatch_script, array_concurrency, sbatch_options, export_env)
+    submit_accounts = parse_accounts(raw.get("submit_accounts", default_submit_accounts))
+    if not submit_accounts and sbatch_options.get("account"):
+        submit_accounts = [str(sbatch_options["account"])]
+    submit_chunk_size = parse_positive_int(raw.get("submit_chunk_size", default_submit_chunk_size), "submit_chunk_size")
+    max_submit_jobs_per_account = parse_positive_int(
+        raw.get("max_submit_jobs_per_account", default_max_submit_jobs_per_account),
+        "max_submit_jobs_per_account",
+    )
+    return RungConfig(
+        name,
+        sweep,
+        results_dir,
+        tag,
+        job_name,
+        sbatch_script,
+        array_concurrency,
+        submit_accounts,
+        submit_chunk_size,
+        max_submit_jobs_per_account,
+        sbatch_options,
+        export_env,
+    )
 
 
 def load_config(path: Path) -> AshaConfig:
@@ -226,6 +277,14 @@ def load_config(path: Path) -> AshaConfig:
     default_sbatch_script = resolve_path(raw.get("sbatch_script", default_script), path.parent)
     default_array_concurrency = parse_array_limit(raw.get("array_concurrency"))
     default_sbatch_options = dict(raw.get("sbatch_options") or {})
+    default_submit_accounts = parse_accounts(raw.get("submit_accounts"))
+    if not default_submit_accounts and default_sbatch_options.get("account"):
+        default_submit_accounts = [str(default_sbatch_options["account"])]
+    default_submit_chunk_size = parse_positive_int(raw.get("submit_chunk_size"), "submit_chunk_size")
+    default_max_submit_jobs_per_account = parse_positive_int(
+        raw.get("max_submit_jobs_per_account"),
+        "max_submit_jobs_per_account",
+    )
     default_export_env = dict(raw.get("export_env") or {})
 
     rungs_raw = list(raw.get("rungs") or [])
@@ -238,6 +297,9 @@ def load_config(path: Path) -> AshaConfig:
             results_root,
             default_sbatch_script,
             default_array_concurrency,
+            default_submit_accounts,
+            default_submit_chunk_size,
+            default_max_submit_jobs_per_account,
             default_sbatch_options,
             default_export_env,
         )
@@ -259,7 +321,7 @@ def load_config(path: Path) -> AshaConfig:
     )
 
 
-def initial_state(config: AshaConfig) -> dict[str, Any]:
+def initial_state(config: AshaConfig) -> Dict[str, Any]:
     return {
         "version": STATE_VERSION,
         "name": config.name,
@@ -271,12 +333,13 @@ def initial_state(config: AshaConfig) -> dict[str, Any]:
         "reduction_factor": config.reduction_factor,
         "promotion_policy": config.promotion_policy,
         "rungs": {
-            rung.name: {"submitted": [], "promoted": [], "cancelled": [], "submissions": []} for rung in config.rungs
+            rung.name: {"planned": [], "submitted": [], "promoted": [], "cancelled": [], "submissions": []}
+            for rung in config.rungs
         },
     }
 
 
-def load_state(config: AshaConfig) -> dict[str, Any]:
+def load_state(config: AshaConfig) -> Dict[str, Any]:
     if not config.state_path.exists():
         return initial_state(config)
     state = json.loads(config.state_path.read_text(encoding="utf-8"))
@@ -284,7 +347,11 @@ def load_state(config: AshaConfig) -> dict[str, Any]:
         raise ValueError(f"Unsupported state version in {config.state_path}: {state.get('version')}")
     state.setdefault("rungs", {})
     for rung in config.rungs:
-        state["rungs"].setdefault(rung.name, {"submitted": [], "promoted": [], "cancelled": [], "submissions": []})
+        state["rungs"].setdefault(
+            rung.name,
+            {"planned": [], "submitted": [], "promoted": [], "cancelled": [], "submissions": []},
+        )
+        state["rungs"][rung.name].setdefault("planned", [])
         state["rungs"][rung.name].setdefault("submitted", [])
         state["rungs"][rung.name].setdefault("promoted", [])
         state["rungs"][rung.name].setdefault("cancelled", [])
@@ -292,7 +359,7 @@ def load_state(config: AshaConfig) -> dict[str, Any]:
     return state
 
 
-def save_state(config: AshaConfig, state: dict[str, Any]) -> None:
+def save_state(config: AshaConfig, state: Dict[str, Any]) -> None:
     state["updated_at"] = utc_now()
     config.state_path.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = config.state_path.with_name(f".{config.state_path.name}.tmp")
@@ -300,7 +367,7 @@ def save_state(config: AshaConfig, state: dict[str, Any]) -> None:
     os.replace(str(tmp_path), str(config.state_path))
 
 
-def set_union_preserve_order(existing: list[str], additions: list[str]) -> list[str]:
+def set_union_preserve_order(existing: List[str], additions: List[str]) -> List[str]:
     seen = set(existing)
     merged = list(existing)
     for item in additions:
@@ -310,7 +377,7 @@ def set_union_preserve_order(existing: list[str], additions: list[str]) -> list[
     return merged
 
 
-def metric_value(row: dict[str, Any], metric: str) -> float | None:
+def metric_value(row: Dict[str, Any], metric: str) -> Optional[float]:
     value = row.get(metric)
     if value is None:
         return None
@@ -320,7 +387,7 @@ def metric_value(row: dict[str, Any], metric: str) -> float | None:
         return None
 
 
-def result_is_promotable(row: dict[str, Any], metric: str) -> bool:
+def result_is_promotable(row: Dict[str, Any], metric: str) -> bool:
     if str(row.get("phase", "")) != PID_PHASE:
         return False
     if int(row.get("exit_code", 1) or 0) != 0:
@@ -330,8 +397,33 @@ def result_is_promotable(row: dict[str, Any], metric: str) -> bool:
     return metric_value(row, metric) is not None
 
 
-def load_result_rows(rung: RungConfig) -> dict[str, dict[str, Any]]:
-    rows: dict[str, dict[str, Any]] = {}
+def result_has_checkpoint(row: Dict[str, Any]) -> bool:
+    path = row.get("checkpoint_path")
+    return bool(row.get("checkpoint_saved")) and bool(path) and Path(str(path)).exists()
+
+
+def rung_requires_resume(rung: RungConfig) -> bool:
+    sweep = expand(load_yaml(rung.sweep), default_vars())
+    return bool(sweep.get("resume_checkpoint_dir"))
+
+
+def downstream_requires_checkpoint(config: AshaConfig, rung: RungConfig) -> bool:
+    for index, candidate in enumerate(config.rungs[:-1]):
+        if candidate.name == rung.name:
+            return rung_requires_resume(config.rungs[index + 1])
+    return False
+
+
+def result_is_reusable(config: AshaConfig, rung: RungConfig, row: Dict[str, Any]) -> bool:
+    if not result_is_promotable(row, config.metric):
+        return False
+    if downstream_requires_checkpoint(config, rung) and not result_has_checkpoint(row):
+        return False
+    return True
+
+
+def load_result_rows(rung: RungConfig) -> Dict[str, Dict[str, Any]]:
+    rows = {}  # type: Dict[str, Dict[str, Any]]
     if not rung.results_dir.exists():
         return rows
     for path in sorted(rung.results_dir.glob("*.json")):
@@ -347,10 +439,10 @@ def load_result_rows(rung: RungConfig) -> dict[str, dict[str, Any]]:
     return rows
 
 
-def rank_rows(rows: list[dict[str, Any]], metric: str, mode: str) -> list[dict[str, Any]]:
+def rank_rows(rows: List[Dict[str, Any]], metric: str, mode: str) -> List[Dict[str, Any]]:
     reverse = mode == "maximize"
 
-    def score(row: dict[str, Any]) -> float:
+    def score(row: Dict[str, Any]) -> float:
         value = metric_value(row, metric)
         if value is None:
             return float("-inf") if reverse else float("inf")
@@ -359,8 +451,8 @@ def rank_rows(rows: list[dict[str, Any]], metric: str, mode: str) -> list[dict[s
     return sorted(rows, key=score, reverse=reverse)
 
 
-def run_index_by_name(rung: RungConfig) -> dict[str, int]:
-    mapping: dict[str, int] = {}
+def run_index_by_name(rung: RungConfig) -> Dict[str, int]:
+    mapping = {}  # type: Dict[str, int]
     for index, run in enumerate(load_sweep_runs(rung.sweep)):
         name = safe_name(str(run["name"]))
         if name in mapping:
@@ -369,7 +461,7 @@ def run_index_by_name(rung: RungConfig) -> dict[str, int]:
     return mapping
 
 
-def build_sbatch_command(rung: RungConfig, indices: list[int]) -> list[str]:
+def build_sbatch_command(rung: RungConfig, indices: List[int], account: Optional[str] = None) -> List[str]:
     variables = default_vars()
     export_items = {
         "P_EDR_ROOT": variables["P_EDR_ROOT"],
@@ -380,7 +472,9 @@ def build_sbatch_command(rung: RungConfig, indices: list[int]) -> list[str]:
         "MELUXINA_PIDSMAKER_RESULTS_DIR": str(rung.results_dir),
     }
     export_items.update({str(key): str(value) for key, value in rung.export_env.items()})
-    export_arg = "ALL," + ",".join(f"{key}={value}" for key, value in export_items.items())
+    # Do not inherit the controller job's Lmod environment into nested GPU jobs.
+    # The array script is a login shell and loads its own modules.
+    export_arg = ",".join(f"{key}={value}" for key, value in export_items.items())
 
     command = [
         "sbatch",
@@ -402,7 +496,7 @@ def build_sbatch_command(rung: RungConfig, indices: list[int]) -> list[str]:
         "error": "--error",
     }
     for key, flag in sbatch_key_map.items():
-        value = rung.sbatch_options.get(key)
+        value = account if key == "account" and account else rung.sbatch_options.get(key)
         if value not in (None, ""):
             command.append(f"{flag}={value}")
     for raw_arg in as_list(rung.sbatch_options.get("extra_args")):
@@ -411,7 +505,12 @@ def build_sbatch_command(rung: RungConfig, indices: list[int]) -> list[str]:
     return command
 
 
-def submit_names(rung: RungConfig, names: list[str], dry_run: bool) -> tuple[str | None, list[int], list[str]]:
+def submit_names(
+    rung: RungConfig,
+    names: List[str],
+    dry_run: bool,
+    account: Optional[str] = None,
+) -> Tuple[Optional[str], List[int], List[str]]:
     if not names:
         return None, [], []
     mapping = run_index_by_name(rung)
@@ -419,14 +518,19 @@ def submit_names(rung: RungConfig, names: list[str], dry_run: bool) -> tuple[str
     if missing:
         raise ValueError(f"Promoted run(s) missing from {rung.sweep}: {missing}")
     indices = [mapping[name] for name in names]
-    command = build_sbatch_command(rung, indices)
-    print(f"submit rung={rung.name} names={len(names)} indices={indices}", flush=True)
+    command = build_sbatch_command(rung, indices, account=account)
+    account_text = f" account={account}" if account else ""
+    print(f"submit rung={rung.name}{account_text} names={len(names)} indices={indices}", flush=True)
     print("$ " + shell_join(command), flush=True)
     if dry_run:
         return None, indices, command
-    completed = subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    completed = subprocess.run(command, check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     output = (completed.stdout or "") + (completed.stderr or "")
     print(output.strip(), flush=True)
+    if completed.returncode != 0:
+        if "AssocMaxSubmitJobLimit" in output or "submit limit" in output.lower():
+            raise SubmitLimitReached(output.strip())
+        raise subprocess.CalledProcessError(completed.returncode, command, completed.stdout, completed.stderr)
     match = re.search(r"Submitted batch job\s+(\d+)", output)
     if not match:
         raise RuntimeError(f"Could not parse sbatch job id from output: {output!r}")
@@ -434,21 +538,22 @@ def submit_names(rung: RungConfig, names: list[str], dry_run: bool) -> tuple[str
 
 
 def record_submission(
-    state: dict[str, Any],
+    state: Dict[str, Any],
     rung: RungConfig,
-    names: list[str],
-    job_id: str | None,
-    indices: list[int],
-    command: list[str],
+    names: List[str],
+    job_id: Optional[str],
+    indices: List[int],
+    command: List[str],
+    account: Optional[str],
 ) -> None:
     rung_state = state["rungs"][rung.name]
     rung_state["submitted"] = set_union_preserve_order(list(rung_state.get("submitted") or []), names)
     rung_state["submissions"].append(
-        {"time": utc_now(), "job_id": job_id, "names": names, "indices": indices, "command": command}
+        {"time": utc_now(), "job_id": job_id, "account": account, "names": names, "indices": indices, "command": command}
     )
 
 
-def record_existing_results(state: dict[str, Any], rung: RungConfig, names: list[str]) -> None:
+def record_existing_results(state: Dict[str, Any], rung: RungConfig, names: List[str]) -> None:
     if not names:
         return
     mapping = run_index_by_name(rung)
@@ -460,18 +565,20 @@ def record_existing_results(state: dict[str, Any], rung: RungConfig, names: list
     )
 
 
-def write_status(config: AshaConfig, state: dict[str, Any]) -> dict[str, Any]:
-    status: dict[str, Any] = {
+def write_status(config: AshaConfig, state: Dict[str, Any]) -> Dict[str, Any]:
+    rung_statuses = []  # type: List[Dict[str, Any]]
+    status = {
         "name": config.name,
         "time": utc_now(),
         "metric": config.metric,
         "mode": config.mode,
         "promotion_policy": config.promotion_policy,
         "reduction_factor": config.reduction_factor,
-        "rungs": [],
+        "rungs": rung_statuses,
     }
     for rung in config.rungs:
         rung_state = state["rungs"][rung.name]
+        planned = list(rung_state.get("planned") or [])
         submitted = list(rung_state.get("submitted") or [])
         promoted = list(rung_state.get("promoted") or [])
         cancelled = list(rung_state.get("cancelled") or [])
@@ -479,11 +586,12 @@ def write_status(config: AshaConfig, state: dict[str, Any]) -> dict[str, Any]:
         completed_names = [name for name in submitted if name in rows]
         valid_rows = [rows[name] for name in completed_names if result_is_promotable(rows[name], config.metric)]
         ranked = rank_rows(valid_rows, config.metric, config.mode)
-        status["rungs"].append(
+        rung_statuses.append(
             {
                 "name": rung.name,
                 "sweep": str(rung.sweep),
                 "results_dir": str(rung.results_dir),
+                "planned": len(planned),
                 "submitted": len(submitted),
                 "completed": len(completed_names),
                 "valid": len(valid_rows),
@@ -498,7 +606,7 @@ def write_status(config: AshaConfig, state: dict[str, Any]) -> dict[str, Any]:
     return status
 
 
-def print_status(status: dict[str, Any]) -> None:
+def print_status(status: Dict[str, Any]) -> None:
     print(
         "ASHA status {} metric={} mode={} promotion_policy={}".format(
             status["name"], status["metric"], status["mode"], status["promotion_policy"]
@@ -510,14 +618,14 @@ def print_status(status: dict[str, Any]) -> None:
         if rung.get("best") is not None:
             best_text = f" best={rung['best']} {status['metric']}={rung['best_metric']}"
         print(
-            "  {name}: submitted={submitted} completed={completed} valid={valid} promoted={promoted} cancelled={cancelled}{best_text}".format(
+            "  {name}: planned={planned} submitted={submitted} completed={completed} valid={valid} promoted={promoted} cancelled={cancelled}{best_text}".format(
                 best_text=best_text, **rung
             ),
             flush=True,
         )
 
 
-def initial_trial_names(config: AshaConfig) -> list[str]:
+def initial_trial_names(config: AshaConfig) -> List[str]:
     first_rung_names = list(run_index_by_name(config.rungs[0]).keys())
     if config.start_trials is None:
         return first_rung_names
@@ -526,6 +634,104 @@ def initial_trial_names(config: AshaConfig) -> list[str]:
         raise ValueError(f"start_trials missing from first rung sweep: {missing}")
     keep = set(config.start_trials)
     return [name for name in first_rung_names if name in keep]
+
+
+@contextmanager
+def submission_lock(config: AshaConfig):
+    lock_path = config.results_root.parent / ".asha_submit.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("w", encoding="utf-8") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+def active_account_task_count(account: str) -> int:
+    command = ["squeue", "-h", "-r", "-u", os.environ.get("USER", ""), "-A", account, "-o", "%i"]
+    completed = subprocess.run(command, check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    if completed.returncode != 0:
+        output = (completed.stdout or "") + (completed.stderr or "")
+        raise RuntimeError(f"Could not query active Slurm jobs for account {account}: {output.strip()}")
+    return sum(1 for line in (completed.stdout or "").splitlines() if line.strip())
+
+
+def account_capacity(account: str, max_submit_jobs: int) -> int:
+    active = active_account_task_count(account)
+    capacity = max(0, max_submit_jobs - active)
+    print(f"account_capacity account={account} active={active} limit={max_submit_jobs} available={capacity}", flush=True)
+    return capacity
+
+
+def planned_names(state: Dict[str, Any], rung: RungConfig) -> List[str]:
+    rung_state = state["rungs"][rung.name]
+    planned = list(rung_state.get("planned") or [])
+    if planned:
+        return planned
+    return list(rung_state.get("submitted") or [])
+
+
+def set_planned(state: Dict[str, Any], rung: RungConfig, names: List[str]) -> bool:
+    rung_state = state["rungs"][rung.name]
+    previous = list(rung_state.get("planned") or [])
+    updated = set_union_preserve_order(previous, names)
+    if updated == previous:
+        return False
+    rung_state["planned"] = updated
+    return True
+
+
+def submit_accounts(rung: RungConfig) -> List[Optional[str]]:
+    accounts = list(rung.submit_accounts)
+    if not accounts and rung.sbatch_options.get("account"):
+        accounts = [str(rung.sbatch_options["account"])]
+    if not accounts:
+        return [None]
+    typed_accounts = []  # type: List[Optional[str]]
+    typed_accounts.extend(accounts)
+    return typed_accounts
+
+
+def submit_pending_planned(config: AshaConfig, state: Dict[str, Any], rung: RungConfig, dry_run: bool) -> bool:
+    rung_state = state["rungs"][rung.name]
+    submitted = set(rung_state.get("submitted") or [])
+    pending = [name for name in planned_names(state, rung) if name not in submitted]
+    if not pending:
+        return False
+
+    changed = False
+    rows = load_result_rows(rung)
+    reusable = [name for name in pending if name in rows and result_is_reusable(config, rung, rows[name])]
+    if reusable:
+        print(f"reuse rung={rung.name} existing_results={len(reusable)} names={reusable}", flush=True)
+        record_existing_results(state, rung, reusable)
+        pending = [name for name in pending if name not in set(reusable)]
+        changed = True
+    if not pending:
+        return changed
+
+    for account in submit_accounts(rung):
+        if not pending:
+            break
+        limit = rung.submit_chunk_size or len(pending)
+        if account and rung.max_submit_jobs_per_account:
+            capacity = account_capacity(account, rung.max_submit_jobs_per_account)
+            if capacity <= 0:
+                continue
+            limit = min(limit, capacity)
+        if limit <= 0:
+            continue
+        chunk = pending[:limit]
+        try:
+            job_id, indices, command = submit_names(rung, chunk, dry_run=dry_run, account=account)
+        except SubmitLimitReached as exc:
+            print(f"submit limit reached rung={rung.name} account={account}: {exc}", flush=True)
+            continue
+        record_submission(state, rung, chunk, job_id, indices, command, account)
+        pending = pending[len(chunk) :]
+        changed = True
+    return changed
 
 
 def max_promotion_count(submitted_count: int, reduction_factor: int) -> int:
@@ -547,8 +753,8 @@ def sync_promotion_target(ranked_count: int, submitted_count: int, reduction_fac
     return min(ranked_count, max_promotion_count(submitted_count, reduction_factor))
 
 
-def submitted_index_by_name(rung_state: dict[str, Any]) -> dict[str, tuple[str, int]]:
-    mapping: dict[str, tuple[str, int]] = {}
+def submitted_index_by_name(rung_state: Dict[str, Any]) -> Dict[str, Tuple[str, int]]:
+    mapping = {}  # type: Dict[str, Tuple[str, int]]
     for submission in list(rung_state.get("submissions") or []):
         names = list(submission.get("names") or [])
         indices = list(submission.get("indices") or [])
@@ -560,18 +766,32 @@ def submitted_index_by_name(rung_state: dict[str, Any]) -> dict[str, tuple[str, 
     return mapping
 
 
-def slurm_state(job_token: str) -> str | None:
+def slurm_state(job_token: str) -> Optional[str]:
     completed = subprocess.run(
         ["squeue", "-h", "-j", job_token, "-o", "%T"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True,
+        universal_newlines=True,
     )
     states = [line.strip() for line in (completed.stdout or "").splitlines() if line.strip()]
     return states[0] if states else None
 
 
-def cancel_pending_tokens(job_tokens: list[str], dry_run: bool) -> list[str]:
+def active_submitted_names(rung_state: Dict[str, Any], names: List[str]) -> List[str]:
+    index_by_name = submitted_index_by_name(rung_state)
+    active = []
+    for name in names:
+        job_info = index_by_name.get(name)
+        if not job_info:
+            continue
+        job_id, index = job_info
+        state = slurm_state(f"{job_id}_{index}")
+        if state in ACTIVE_SLURM_STATES:
+            active.append(name)
+    return active
+
+
+def cancel_pending_tokens(job_tokens: List[str], dry_run: bool) -> List[str]:
     cancelled = []
     for token in job_tokens:
         if dry_run:
@@ -589,9 +809,9 @@ def cancel_pending_tokens(job_tokens: list[str], dry_run: bool) -> list[str]:
 
 def maybe_cancel_remaining_async(
     config: AshaConfig,
-    state: dict[str, Any],
+    state: Dict[str, Any],
     rung: RungConfig,
-    rows: dict[str, dict[str, Any]],
+    rows: Dict[str, Dict[str, Any]],
     dry_run: bool,
 ) -> bool:
     rung_state = state["rungs"][rung.name]
@@ -629,90 +849,116 @@ def maybe_cancel_remaining_async(
     return True
 
 
-def maybe_submit_initial(config: AshaConfig, state: dict[str, Any], dry_run: bool) -> bool:
+def maybe_submit_initial(config: AshaConfig, state: Dict[str, Any], dry_run: bool) -> bool:
     first = config.rungs[0]
     first_state = state["rungs"][first.name]
-    if first_state.get("submitted"):
+    if first_state.get("planned"):
         return False
     names = initial_trial_names(config)
     if not names:
         raise ValueError("No initial trials selected")
-    job_id, indices, command = submit_names(first, names, dry_run=dry_run)
+    print(f"plan initial rung={first.name} names={len(names)}", flush=True)
     if not dry_run:
-        record_submission(state, first, names, job_id, indices, command)
+        first_state["planned"] = names
+    else:
+        first_state["planned"] = names
     return True
 
 
-def maybe_promote(config: AshaConfig, state: dict[str, Any], dry_run: bool) -> bool:
+def maybe_promote(config: AshaConfig, state: Dict[str, Any], dry_run: bool) -> bool:
     changed = False
     for rung_index, rung in enumerate(config.rungs[:-1]):
         next_rung = config.rungs[rung_index + 1]
         rung_state = state["rungs"][rung.name]
         next_state = state["rungs"][next_rung.name]
+        planned = planned_names(state, rung)
+        if not planned:
+            continue
         submitted = list(rung_state.get("submitted") or [])
-        if not submitted:
+        if any(name not in set(submitted) for name in planned):
             continue
         rows = load_result_rows(rung)
-        completed_names = [name for name in submitted if name in rows]
+        completed_names = [name for name in planned if name in rows]
         completed_count = len(completed_names)
         if config.promotion_policy == "sync":
-            if completed_count < len(submitted):
+            if completed_count < len(planned):
                 continue
+            require_checkpoint = rung_requires_resume(next_rung)
             valid_rows = [rows[name] for name in completed_names if result_is_promotable(rows[name], config.metric)]
             ranked = rank_rows(valid_rows, config.metric, config.mode)
-            target = sync_promotion_target(len(ranked), len(submitted), config.reduction_factor)
+            incomplete = [
+                name
+                for name in planned
+                if name not in rows
+                or not result_is_promotable(rows[name], config.metric)
+            ]
+            active_incomplete = active_submitted_names(rung_state, incomplete)
+            if active_incomplete:
+                print(
+                    f"wait promotion rung={rung.name} active_incomplete={len(active_incomplete)}",
+                    flush=True,
+                )
+                continue
+            target = sync_promotion_target(len(ranked), len(planned), config.reduction_factor)
+            if require_checkpoint and target > 0:
+                candidate_names = [str(row["name"]) for row in ranked[:target]]
+                missing_candidate_checkpoints = [
+                    name for name in candidate_names if name in rows and not result_has_checkpoint(rows[name])
+                ]
+                if missing_candidate_checkpoints:
+                    active_checkpoint_jobs = active_submitted_names(rung_state, missing_candidate_checkpoints)
+                    print(
+                        "wait promotion rung={} missing_candidate_checkpoints={} active_checkpoint_jobs={}".format(
+                            rung.name, len(missing_candidate_checkpoints), len(active_checkpoint_jobs)
+                        ),
+                        flush=True,
+                    )
+                    continue
         else:
-            target = promotion_target(completed_count, len(submitted), config.reduction_factor)
+            target = promotion_target(completed_count, len(planned), config.reduction_factor)
+            require_checkpoint = rung_requires_resume(next_rung)
             valid_rows = [rows[name] for name in completed_names if result_is_promotable(rows[name], config.metric)]
             ranked = rank_rows(valid_rows, config.metric, config.mode)
         already_promoted = list(rung_state.get("promoted") or [])
         remaining_slots = target - len(already_promoted)
-        if config.promotion_policy == "async" and len(already_promoted) >= max_promotion_count(len(submitted), config.reduction_factor):
+        if config.promotion_policy == "async" and len(already_promoted) >= max_promotion_count(len(planned), config.reduction_factor):
             changed = maybe_cancel_remaining_async(config, state, rung, rows, dry_run) or changed
         if remaining_slots <= 0:
             continue
         already_promoted_set = set(already_promoted)
-        next_submitted_set = set(next_state.get("submitted") or [])
-        next_rows = load_result_rows(next_rung)
-        next_valid_set = {name for name, row in next_rows.items() if result_is_promotable(row, config.metric)}
+        next_planned_set = set(next_state.get("planned") or [])
         candidates = [
             str(row["name"])
             for row in ranked
             if str(row.get("name")) not in already_promoted_set
-            and (str(row.get("name")) not in next_submitted_set or str(row.get("name")) in next_valid_set)
+            and str(row.get("name")) not in next_planned_set
         ]
         promote = candidates[:remaining_slots]
         if not promote:
             continue
 
-        reuse = [name for name in promote if name in next_valid_set and name not in next_submitted_set]
-        submit = [name for name in promote if name not in next_valid_set]
-        if reuse:
-            print(f"reuse rung={next_rung.name} existing_results={len(reuse)} names={reuse}", flush=True)
-        job_id = None
-        indices: list[int] = []
-        command: list[str] = []
-        if submit:
-            job_id, indices, command = submit_names(next_rung, submit, dry_run=dry_run)
+        print(f"plan promotion {rung.name}->{next_rung.name} names={len(promote)}", flush=True)
         if not dry_run:
             rung_state["promoted"] = set_union_preserve_order(already_promoted, promote)
-            if reuse:
-                record_existing_results(state, next_rung, reuse)
-            if submit:
-                record_submission(state, next_rung, submit, job_id, indices, command)
-            if config.promotion_policy == "async" and len(rung_state["promoted"]) >= max_promotion_count(len(submitted), config.reduction_factor):
+            set_planned(state, next_rung, promote)
+            if config.promotion_policy == "async" and len(rung_state["promoted"]) >= max_promotion_count(len(planned), config.reduction_factor):
                 changed = maybe_cancel_remaining_async(config, state, rung, rows, dry_run) or changed
+        else:
+            set_planned(state, next_rung, promote)
         changed = True
     return changed
 
 
-def all_done(config: AshaConfig, state: dict[str, Any]) -> bool:
+def all_done(config: AshaConfig, state: Dict[str, Any]) -> bool:
     final_rung = config.rungs[-1]
-    final_submitted = list(state["rungs"][final_rung.name].get("submitted") or [])
-    if not final_submitted:
+    final_planned = planned_names(state, final_rung)
+    if not final_planned:
+        return False
+    final_submitted = set(state["rungs"][final_rung.name].get("submitted") or [])
+    if any(name not in final_submitted for name in final_planned):
         return False
     rows = load_result_rows(final_rung)
-    return all(name in rows for name in final_submitted)
+    return all(name in rows for name in final_planned)
 
 
 def parse_args() -> argparse.Namespace:
@@ -734,8 +980,15 @@ def main() -> None:
     loops = 0
     while True:
         loops += 1
-        changed = maybe_submit_initial(config, state, dry_run=args.dry_run)
-        changed = maybe_promote(config, state, dry_run=args.dry_run) or changed
+        with submission_lock(config):
+            changed = maybe_submit_initial(config, state, dry_run=args.dry_run)
+            for rung in config.rungs:
+                changed = submit_pending_planned(config, state, rung, dry_run=args.dry_run) or changed
+            promoted = maybe_promote(config, state, dry_run=args.dry_run)
+            changed = promoted or changed
+            if promoted:
+                for rung in config.rungs:
+                    changed = submit_pending_planned(config, state, rung, dry_run=args.dry_run) or changed
         if changed and not args.dry_run:
             save_state(config, state)
         status = write_status(config, state)

@@ -20,8 +20,13 @@ GRID_DIR = ASHA_DIR / "grids"
 DEFAULT_SELECTION_METRIC = "adp_score"
 DEFAULT_SELECTION_MODE = "maximize"
 DEFAULT_PROMOTION_POLICY = "sync"
+DEFAULT_REDUCTION_FACTOR = 2
 DEFAULT_ACCOUNT = "p201223"
-DEFAULT_ARRAY_CONCURRENCY = 81
+DEFAULT_SUBMIT_ACCOUNTS = ("p201223", "p201219")
+DEFAULT_ARRAY_CONCURRENCY = 100
+DEFAULT_SUBMIT_CHUNK_SIZE = 100
+DEFAULT_MAX_SUBMIT_JOBS_PER_ACCOUNT = 100
+RUNG_EPOCHS = (1, 2, 4, 9)
 MAGIC_WINDOW_EXPORTS = {
     "1m": ("${ORANGE_EXPORT_ROOT}", 60),
     "2m": ("${P_EDR_ROOT}/capture_export/pidsmaker_export_variants/recap_raw/window_2m", 120),
@@ -168,10 +173,10 @@ METHODS: tuple[MethodGrid, ...] = (
 )
 
 RUNG_WALLTIMES = {
-    "magic": ("00:45:00", "01:30:00", "04:00:00"),
-    "velox": ("00:45:00", "01:20:00", "03:30:00"),
-    "orthrus": ("01:00:00", "02:00:00", "06:00:00"),
-    "kairos": ("01:00:00", "02:00:00", "06:00:00"),
+    "magic": ("00:45:00", "01:00:00", "02:00:00", "04:00:00"),
+    "velox": ("00:45:00", "01:00:00", "02:00:00", "03:30:00"),
+    "orthrus": ("01:00:00", "01:30:00", "03:00:00", "06:00:00"),
+    "kairos": ("01:00:00", "01:30:00", "03:00:00", "06:00:00"),
 }
 
 
@@ -198,23 +203,46 @@ def ordered_combos(grid: MethodGrid) -> list[tuple[Any, ...]]:
     return [grid.default] + [combo for combo in all_combos if combo != grid.default]
 
 
-def base_sweep(grid: MethodGrid, rung: int, epochs: int, selection_metric: str) -> dict[str, Any]:
+def checkpoint_dir(grid: MethodGrid, rung: int, epochs: int) -> str:
+    return f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{grid.label}_recap_raw_100/r{rung}_e{epochs}_checkpoints"
+
+
+def base_sweep(
+    grid: MethodGrid,
+    rung: int,
+    epochs: int,
+    selection_metric: str,
+    previous_rung: int | None = None,
+    previous_epochs: int | None = None,
+) -> dict[str, Any]:
     name = f"orange_recap_raw_{grid.label}_100_asha_r{rung}_e{epochs}"
-    return {
+    sweep = {
         "name": name,
         "repo_root": "${P_EDR_ROOT}/external/PIDSMaker",
         "artifact_root": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/artifacts/asha/{grid.label}",
         "results_dir": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/results/asha/{name}",
+        "checkpoint_dir": checkpoint_dir(grid, rung, epochs),
         "selection_metric": selection_metric,
         "completion_metric": selection_metric,
         "method": grid.method,
         "dataset": DATASET,
         "epochs": epochs,
     }
+    if previous_rung is not None and previous_epochs is not None:
+        sweep["resume_checkpoint_dir"] = checkpoint_dir(grid, previous_rung, previous_epochs)
+    return sweep
 
 
-def write_sweep(grid: MethodGrid, rung: int, epochs: int, runs: list[dict[str, Any]], selection_metric: str) -> Path:
-    sweep = base_sweep(grid, rung, epochs, selection_metric)
+def write_sweep(
+    grid: MethodGrid,
+    rung: int,
+    epochs: int,
+    runs: list[dict[str, Any]],
+    selection_metric: str,
+    previous_rung: int | None = None,
+    previous_epochs: int | None = None,
+) -> Path:
+    sweep = base_sweep(grid, rung, epochs, selection_metric, previous_rung, previous_epochs)
     sweep["runs"] = runs
     path = SWEEP_DIR / f"{grid.label}_recap_raw_100_asha_r{rung}_e{epochs}.yml"
     path.write_text(yaml.safe_dump(sweep, sort_keys=False), encoding="utf-8")
@@ -238,11 +266,14 @@ def write_asha_config(
     selection_mode: str,
     promotion_policy: str,
     account: str,
+    submit_accounts: list[str],
     array_concurrency: int,
+    submit_chunk_size: int,
+    max_submit_jobs_per_account: int,
 ) -> Path:
     rungs = []
     rung_walltimes = RUNG_WALLTIMES[grid.label]
-    for rung, (epochs, path) in enumerate(zip((1, 3, 9), rung_paths)):
+    for rung, (epochs, path) in enumerate(zip(RUNG_EPOCHS, rung_paths)):
         rungs.append(
             {
                 "name": f"r{rung}_e{epochs}",
@@ -260,8 +291,11 @@ def write_asha_config(
         "metric": selection_metric,
         "mode": selection_mode,
         "promotion_policy": promotion_policy,
-        "reduction_factor": 3,
+        "reduction_factor": DEFAULT_REDUCTION_FACTOR,
         "poll_seconds": 120,
+        "submit_accounts": submit_accounts,
+        "submit_chunk_size": submit_chunk_size,
+        "max_submit_jobs_per_account": max_submit_jobs_per_account,
         "array_concurrency": array_concurrency,
         "sbatch_script": "${P_EDR_ROOT}/meluxina/pidsmaker/run_array.sbatch",
         "sbatch_options": {
@@ -275,6 +309,7 @@ def write_asha_config(
             "error": "${P_EDR_ROOT}/run_logs/%x-%A_%a.err",
         },
         "export_env": {
+            "MELUXINA_PIDSMAKER_IMAGE": "${P_EDR_ROOT}/containers/pidsmaker-pids-psycopg2.sif",
             "MELUXINA_PIDSMAKER_AUTO_BUILD_IMAGE": 1,
         },
         "rungs": rungs,
@@ -290,12 +325,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--mode", choices=["minimize", "maximize"], default=DEFAULT_SELECTION_MODE)
     parser.add_argument("--promotion-policy", choices=["async", "sync"], default=DEFAULT_PROMOTION_POLICY)
     parser.add_argument("--account", default=DEFAULT_ACCOUNT)
+    parser.add_argument("--submit-accounts", default=",".join(DEFAULT_SUBMIT_ACCOUNTS))
     parser.add_argument("--array-concurrency", type=int, default=DEFAULT_ARRAY_CONCURRENCY)
+    parser.add_argument("--submit-chunk-size", type=int, default=DEFAULT_SUBMIT_CHUNK_SIZE)
+    parser.add_argument("--max-submit-jobs-per-account", type=int, default=DEFAULT_MAX_SUBMIT_JOBS_PER_ACCOUNT)
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
+    submit_accounts = [item.strip() for item in args.submit_accounts.split(",") if item.strip()]
+    if not submit_accounts:
+        raise RuntimeError("At least one submit account is required")
     SWEEP_DIR.mkdir(parents=True, exist_ok=True)
     ASHA_DIR.mkdir(parents=True, exist_ok=True)
     GRID_DIR.mkdir(parents=True, exist_ok=True)
@@ -308,7 +349,11 @@ def main() -> None:
             {"name": combo_name(index, grid, combo), **combo_payload(grid, combo)}
             for index, combo in enumerate(combos)
         ]
-        rung_paths = [write_sweep(grid, rung, epochs, runs, args.metric) for rung, epochs in enumerate((1, 3, 9))]
+        rung_paths = []
+        for rung, epochs in enumerate(RUNG_EPOCHS):
+            previous_rung = rung - 1 if rung > 0 else None
+            previous_epochs = RUNG_EPOCHS[rung - 1] if rung > 0 else None
+            rung_paths.append(write_sweep(grid, rung, epochs, runs, args.metric, previous_rung, previous_epochs))
         csv_path = write_grid_csv(grid, combos)
         asha_path = write_asha_config(
             grid,
@@ -317,7 +362,10 @@ def main() -> None:
             args.mode,
             args.promotion_policy,
             args.account,
+            submit_accounts,
             args.array_concurrency,
+            args.submit_chunk_size,
+            args.max_submit_jobs_per_account,
         )
         print(
             f"{grid.label}: {len(runs)} runs, rungs={', '.join(str(path) for path in rung_paths)}, "

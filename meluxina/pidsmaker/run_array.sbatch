@@ -43,6 +43,27 @@ ensure_pidsmaker_apptainer_image
 NODE_TMP=${MELUXINA_PIDSMAKER_NODE_TMPDIR:-${TMPDIR:-/tmp}}
 export APPTAINER_CACHEDIR=${APPTAINER_CACHEDIR:-${NODE_TMP%/}/apptainer-cache-${USER:-user}}
 export APPTAINER_TMPDIR=${APPTAINER_TMPDIR:-${NODE_TMP%/}/apptainer-tmp-${USER:-user}}
+HPO_SCRATCH_PREFIX=${NODE_TMP%/}/pidsmaker-artifacts
+if [[ "${MELUXINA_PIDSMAKER_PHASE:-}" == "hpo" && -z "${MELUXINA_PIDSMAKER_ARTIFACT_ROOT:-}" ]]; then
+  hpo_job_id=${SLURM_ARRAY_JOB_ID:-${SLURM_JOB_ID:-manual}}
+  hpo_task_id=${SLURM_ARRAY_TASK_ID:-0}
+  export MELUXINA_PIDSMAKER_ARTIFACT_ROOT=${HPO_SCRATCH_PREFIX}/${hpo_job_id}/${hpo_task_id}
+  export MELUXINA_PIDSMAKER_CLEANUP_ARTIFACT_ROOT=1
+fi
+
+cleanup_hpo_artifact_root() {
+  if [[ "${MELUXINA_PIDSMAKER_CLEANUP_ARTIFACT_ROOT:-0}" != "1" ]]; then
+    return
+  fi
+  if [[ -z "${MELUXINA_PIDSMAKER_ARTIFACT_ROOT:-}" ]]; then
+    return
+  fi
+  case "${MELUXINA_PIDSMAKER_ARTIFACT_ROOT}" in
+    "${HPO_SCRATCH_PREFIX}"/*) rm -rf -- "${MELUXINA_PIDSMAKER_ARTIFACT_ROOT}" ;;
+    *) printf 'Refusing to clean non-scratch artifact root: %s\n' "${MELUXINA_PIDSMAKER_ARTIFACT_ROOT}" >&2 ;;
+  esac
+}
+trap cleanup_hpo_artifact_root EXIT
 export ORANGE_EXPORT_ROOT
 export P_EDR_ROOT
 export APPTAINERENV_ORANGE_EXPORT_ROOT=${ORANGE_EXPORT_ROOT}
@@ -54,6 +75,7 @@ mkdir -p "${APPTAINER_CACHEDIR}" "${APPTAINER_TMPDIR}" "${LOG_DIR}"
 printf 'P_EDR_ROOT=%s\n' "${P_EDR_ROOT}"
 printf 'MELUXINA_PIDSMAKER_SWEEP=%s\n' "${MELUXINA_PIDSMAKER_SWEEP}"
 printf 'MELUXINA_PIDSMAKER_IMAGE=%s\n' "${MELUXINA_PIDSMAKER_IMAGE}"
+printf 'MELUXINA_PIDSMAKER_ARTIFACT_ROOT=%s\n' "${MELUXINA_PIDSMAKER_ARTIFACT_ROOT:-}"
 printf 'ORANGE_EXPORT_ROOT=%s\n' "${ORANGE_EXPORT_ROOT}"
 printf 'SLURM_ARRAY_TASK_ID=%s\n' "${SLURM_ARRAY_TASK_ID:-0}"
 
