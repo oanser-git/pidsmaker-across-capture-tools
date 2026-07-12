@@ -61,6 +61,13 @@ class RungConfig:
         self.export_env = export_env
 
 
+class FinalConfig:
+    def __init__(self, source_rung: str, top_k: int, rung: RungConfig) -> None:
+        self.source_rung = source_rung
+        self.top_k = top_k
+        self.rung = rung
+
+
 class AshaConfig:
     def __init__(
         self,
@@ -75,6 +82,7 @@ class AshaConfig:
         poll_seconds: int,
         start_trials: Optional[List[str]],
         rungs: List[RungConfig],
+        final: Optional[FinalConfig],
     ) -> None:
         self.name = name
         self.config_path = config_path
@@ -87,6 +95,7 @@ class AshaConfig:
         self.poll_seconds = poll_seconds
         self.start_trials = start_trials
         self.rungs = rungs
+        self.final = final
 
 
 def utc_now() -> str:
@@ -305,6 +314,28 @@ def load_config(path: Path) -> AshaConfig:
         )
         for rung in rungs_raw
     ]
+    final_config = None  # type: Optional[FinalConfig]
+    if raw.get("final"):
+        final_raw = dict(raw["final"])
+        source_rung = safe_name(str(final_raw.get("source_rung") or rungs[-1].name))
+        if source_rung not in {rung.name for rung in rungs}:
+            raise ValueError(f"final.source_rung {source_rung!r} is not an ASHA rung")
+        top_k = int(final_raw.get("top_k", 3))
+        if top_k <= 0:
+            raise ValueError("final.top_k must be positive")
+        final_rung = build_rung_config(
+            final_raw,
+            path.parent,
+            results_root,
+            default_sbatch_script,
+            default_array_concurrency,
+            default_submit_accounts,
+            default_submit_chunk_size,
+            default_max_submit_jobs_per_account,
+            default_sbatch_options,
+            default_export_env,
+        )
+        final_config = FinalConfig(source_rung, top_k, final_rung)
     start_trials = [safe_name(str(item)) for item in as_list(raw.get("start_trials"))] or None
     return AshaConfig(
         name,
@@ -318,11 +349,12 @@ def load_config(path: Path) -> AshaConfig:
         poll_seconds,
         start_trials,
         rungs,
+        final_config,
     )
 
 
 def initial_state(config: AshaConfig) -> Dict[str, Any]:
-    return {
+    state = {
         "version": STATE_VERSION,
         "name": config.name,
         "config_path": str(config.config_path),
@@ -337,6 +369,16 @@ def initial_state(config: AshaConfig) -> Dict[str, Any]:
             for rung in config.rungs
         },
     }
+    if config.final:
+        state["final"] = {
+            "source_rung": config.final.source_rung,
+            "top_k": config.final.top_k,
+            "planned": [],
+            "submitted": [],
+            "cancelled": [],
+            "submissions": [],
+        }
+    return state
 
 
 def load_state(config: AshaConfig) -> Dict[str, Any]:
@@ -356,6 +398,14 @@ def load_state(config: AshaConfig) -> Dict[str, Any]:
         state["rungs"][rung.name].setdefault("promoted", [])
         state["rungs"][rung.name].setdefault("cancelled", [])
         state["rungs"][rung.name].setdefault("submissions", [])
+    if config.final:
+        state.setdefault("final", {})
+        state["final"].setdefault("source_rung", config.final.source_rung)
+        state["final"].setdefault("top_k", config.final.top_k)
+        state["final"].setdefault("planned", [])
+        state["final"].setdefault("submitted", [])
+        state["final"].setdefault("cancelled", [])
+        state["final"].setdefault("submissions", [])
     return state
 
 
@@ -601,6 +651,32 @@ def write_status(config: AshaConfig, state: Dict[str, Any]) -> Dict[str, Any]:
                 "best_metric": metric_value(ranked[0], config.metric) if ranked else None,
             }
         )
+    if config.final:
+        final_state = state.get("final") or {}
+        final_rows = load_result_rows(config.final.rung)
+        final_planned = list(final_state.get("planned") or [])
+        final_submitted = list(final_state.get("submitted") or [])
+        final_completed = [name for name in final_submitted if name in final_rows]
+        final_valid_rows = [
+            final_rows[name]
+            for name in final_completed
+            if int(final_rows[name].get("exit_code", 1) or 0) == 0
+            and metric_value(final_rows[name], config.metric) is not None
+        ]
+        final_ranked = rank_rows(final_valid_rows, config.metric, config.mode)
+        status["final"] = {
+            "name": config.final.rung.name,
+            "source_rung": config.final.source_rung,
+            "top_k": config.final.top_k,
+            "sweep": str(config.final.rung.sweep),
+            "results_dir": str(config.final.rung.results_dir),
+            "planned": len(final_planned),
+            "submitted": len(final_submitted),
+            "completed": len(final_completed),
+            "valid": len(final_valid_rows),
+            "best": final_ranked[0].get("name") if final_ranked else None,
+            "best_metric": metric_value(final_ranked[0], config.metric) if final_ranked else None,
+        }
     config.results_root.mkdir(parents=True, exist_ok=True)
     (config.results_root / "asha_status.json").write_text(json.dumps(status, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return status
@@ -620,6 +696,17 @@ def print_status(status: Dict[str, Any]) -> None:
         print(
             "  {name}: planned={planned} submitted={submitted} completed={completed} valid={valid} promoted={promoted} cancelled={cancelled}{best_text}".format(
                 best_text=best_text, **rung
+            ),
+            flush=True,
+        )
+    if status.get("final"):
+        final = status["final"]
+        best_text = ""
+        if final.get("best") is not None:
+            best_text = f" best={final['best']} {status['metric']}={final['best_metric']}"
+        print(
+            "  final {name}: source={source_rung} top_k={top_k} planned={planned} submitted={submitted} completed={completed} valid={valid}{best_text}".format(
+                best_text=best_text, **final
             ),
             flush=True,
         )
@@ -729,6 +816,84 @@ def submit_pending_planned(config: AshaConfig, state: Dict[str, Any], rung: Rung
             print(f"submit limit reached rung={rung.name} account={account}: {exc}", flush=True)
             continue
         record_submission(state, rung, chunk, job_id, indices, command, account)
+        pending = pending[len(chunk) :]
+        changed = True
+    return changed
+
+
+def record_final_submission(
+    state: Dict[str, Any],
+    names: List[str],
+    job_id: Optional[str],
+    indices: List[int],
+    command: List[str],
+    account: Optional[str],
+) -> None:
+    final_state = state["final"]
+    final_state["submitted"] = set_union_preserve_order(list(final_state.get("submitted") or []), names)
+    final_state["submissions"].append(
+        {"time": utc_now(), "job_id": job_id, "account": account, "names": names, "indices": indices, "command": command}
+    )
+
+
+def record_existing_final_results(state: Dict[str, Any], final: FinalConfig, names: List[str]) -> None:
+    if not names:
+        return
+    mapping = run_index_by_name(final.rung)
+    indices = [mapping[name] for name in names if name in mapping]
+    final_state = state["final"]
+    final_state["submitted"] = set_union_preserve_order(list(final_state.get("submitted") or []), names)
+    final_state["submissions"].append(
+        {"time": utc_now(), "job_id": "existing_result", "names": names, "indices": indices, "command": ["existing_result"]}
+    )
+
+
+def final_result_is_complete(row: Dict[str, Any], metric: str) -> bool:
+    if int(row.get("exit_code", 1) or 0) != 0:
+        return False
+    if bool(row.get("oom")):
+        return False
+    return metric_value(row, metric) is not None
+
+
+def submit_pending_final(config: AshaConfig, state: Dict[str, Any], dry_run: bool) -> bool:
+    if not config.final:
+        return False
+    final_state = state.get("final") or {}
+    submitted = set(final_state.get("submitted") or [])
+    pending = [name for name in list(final_state.get("planned") or []) if name not in submitted]
+    if not pending:
+        return False
+
+    changed = False
+    rows = load_result_rows(config.final.rung)
+    reusable = [name for name in pending if name in rows and final_result_is_complete(rows[name], config.metric)]
+    if reusable:
+        print(f"reuse final={config.final.rung.name} existing_results={len(reusable)} names={reusable}", flush=True)
+        record_existing_final_results(state, config.final, reusable)
+        pending = [name for name in pending if name not in set(reusable)]
+        changed = True
+    if not pending:
+        return changed
+
+    for account in submit_accounts(config.final.rung):
+        if not pending:
+            break
+        limit = config.final.rung.submit_chunk_size or len(pending)
+        if account and config.final.rung.max_submit_jobs_per_account:
+            capacity = account_capacity(account, config.final.rung.max_submit_jobs_per_account)
+            if capacity <= 0:
+                continue
+            limit = min(limit, capacity)
+        if limit <= 0:
+            continue
+        chunk = pending[:limit]
+        try:
+            job_id, indices, command = submit_names(config.final.rung, chunk, dry_run=dry_run, account=account)
+        except SubmitLimitReached as exc:
+            print(f"submit limit reached final={config.final.rung.name} account={account}: {exc}", flush=True)
+            continue
+        record_final_submission(state, chunk, job_id, indices, command, account)
         pending = pending[len(chunk) :]
         changed = True
     return changed
@@ -949,7 +1114,69 @@ def maybe_promote(config: AshaConfig, state: Dict[str, Any], dry_run: bool) -> b
     return changed
 
 
+def maybe_plan_final(config: AshaConfig, state: Dict[str, Any], dry_run: bool) -> bool:
+    if not config.final:
+        return False
+    final_state = state.get("final") or {}
+    if final_state.get("planned"):
+        return False
+
+    source_rung = None
+    for rung in config.rungs:
+        if rung.name == config.final.source_rung:
+            source_rung = rung
+            break
+    if source_rung is None:
+        raise ValueError(f"Unknown final source rung: {config.final.source_rung}")
+
+    source_state = state["rungs"][source_rung.name]
+    source_planned = planned_names(state, source_rung)
+    if not source_planned:
+        return False
+    source_submitted = set(source_state.get("submitted") or [])
+    if any(name not in source_submitted for name in source_planned):
+        return False
+
+    rows = load_result_rows(source_rung)
+    completed_names = [name for name in source_planned if name in rows]
+    if len(completed_names) < len(source_planned):
+        return False
+
+    valid_rows = [rows[name] for name in completed_names if result_is_promotable(rows[name], config.metric)]
+    ranked = rank_rows(valid_rows, config.metric, config.mode)
+    selected = [str(row["name"]) for row in ranked[: config.final.top_k]]
+    if not selected:
+        print(f"final source={source_rung.name} has no valid rows; cannot plan final", flush=True)
+        return False
+
+    print(
+        "plan final source={} final={} top_k={} selected={}".format(
+            source_rung.name, config.final.rung.name, config.final.top_k, selected
+        ),
+        flush=True,
+    )
+    final_state = state["final"]
+    final_state["source_rung"] = config.final.source_rung
+    final_state["top_k"] = config.final.top_k
+    final_state["planned"] = selected
+    final_state["submitted"] = []
+    final_state["cancelled"] = []
+    final_state["submissions"] = []
+    return True
+
+
 def all_done(config: AshaConfig, state: Dict[str, Any]) -> bool:
+    if config.final:
+        final_state = state.get("final") or {}
+        final_planned = list(final_state.get("planned") or [])
+        if not final_planned:
+            return False
+        final_submitted = set(final_state.get("submitted") or [])
+        if any(name not in final_submitted for name in final_planned):
+            return False
+        final_rows = load_result_rows(config.final.rung)
+        return all(name in final_rows for name in final_planned)
+
     final_rung = config.rungs[-1]
     final_planned = planned_names(state, final_rung)
     if not final_planned:
@@ -989,6 +1216,9 @@ def main() -> None:
             if promoted:
                 for rung in config.rungs:
                     changed = submit_pending_planned(config, state, rung, dry_run=args.dry_run) or changed
+            final_planned = maybe_plan_final(config, state, dry_run=args.dry_run)
+            changed = final_planned or changed
+            changed = submit_pending_final(config, state, dry_run=args.dry_run) or changed
         if changed and not args.dry_run:
             save_state(config, state)
         status = write_status(config, state)

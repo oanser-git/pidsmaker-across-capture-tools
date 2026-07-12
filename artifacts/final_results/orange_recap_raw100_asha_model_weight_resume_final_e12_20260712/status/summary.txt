@@ -1,0 +1,36 @@
+ASHA/PIDSMaker summary
+Repo/storage path: /mnt/tier2/project/p201223/pidsmaker-across-capture-tools
+Legend: done=X/Y = valid metric JSONs; waiting_submit = backlog not submitted yet
+ckpt = valid runs with saved checkpoints; top_ckpt = checkpointed candidates needed for next additive rung.
+Free account slots are shared by all methods and are filled on controller polling loops.
+Queue: TOTAL=0 RUNNING=0 PENDING=0 CONFIGURING=0
+Account slots: p201223 used=0/100 free=100; p201219 used=0/100 free=100
+GPU HPO detail: none
+
+== magic ==
+controller: not in queue
+r0_e1: done=243/243 ckpt=243 top_ckpt=121/121 failed=0 waiting_submit=0 promoted=121 best_adp=0.842 slurm=none
+r1_e2: done=121/121 ckpt=121 top_ckpt=60/60 failed=0 waiting_submit=0 promoted=60 best_adp=0.834 slurm=none
+r2_e4: done=60/60 ckpt=60 top_ckpt=30/30 failed=0 waiting_submit=0 promoted=30 best_adp=0.852 slurm=none
+r3_e9: done=30/30 ckpt=30 failed=0 waiting_submit=0 promoted=0 best_adp=0.839 slurm=none
+
+== velox ==
+controller: not in queue
+r0_e1: done=243/243 ckpt=243 top_ckpt=121/121 failed=0 waiting_submit=0 promoted=121 best_adp=0.878 slurm=none
+r1_e2: done=121/121 ckpt=121 top_ckpt=60/60 failed=0 waiting_submit=0 promoted=60 best_adp=0.908 slurm=none
+r2_e4: done=60/60 ckpt=60 top_ckpt=30/30 failed=0 waiting_submit=0 promoted=30 best_adp=0.878 slurm=none
+r3_e9: done=30/30 ckpt=30 failed=0 waiting_submit=0 promoted=0 best_adp=0.801 slurm=none
+
+== orthrus ==
+controller: not in queue
+r0_e1: done=243/243 ckpt=243 top_ckpt=121/121 failed=0 waiting_submit=0 promoted=121 best_adp=0.725 slurm=none
+r1_e2: done=121/121 ckpt=121 top_ckpt=60/60 failed=0 waiting_submit=0 promoted=60 best_adp=0.800 slurm=none
+r2_e4: done=60/60 ckpt=60 top_ckpt=30/30 failed=0 waiting_submit=0 promoted=30 best_adp=0.799 slurm=none
+r3_e9: done=30/30 ckpt=30 failed=0 waiting_submit=0 promoted=0 best_adp=0.774 slurm=none
+
+== kairos ==
+controller: not in queue
+r0_e1: done=243/243 ckpt=243 top_ckpt=121/121 failed=0 waiting_submit=0 promoted=121 best_adp=0.888 slurm=none
+r1_e2: done=121/121 ckpt=121 top_ckpt=60/60 failed=0 waiting_submit=0 promoted=60 best_adp=0.892 slurm=none
+r2_e4: done=60/60 ckpt=60 top_ckpt=30/30 failed=0 waiting_submit=0 promoted=30 best_adp=0.889 slurm=none
+r3_e9: done=30/30 ckpt=30 failed=0 waiting_submit=0 promoted=0 best_adp=0.837 slurm=none

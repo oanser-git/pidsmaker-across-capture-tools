@@ -53,3 +53,15 @@ rungs:
   job_name: magic_recap_raw100_r3
   sbatch_options:
     time: 04:00:00
+final:
+  name: final_e12
+  source_rung: r3_e9
+  top_k: 3
+  sweep: ${P_EDR_ROOT}/meluxina/pidsmaker/sweeps/asha/magic_recap_raw_100_final_e12.yml
+  results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/magic_recap_raw_100/final_e12
+  tag: magic_recap_raw100_final_e12
+  job_name: magic_recap_raw100_final_e12
+  export_env:
+    MELUXINA_PIDSMAKER_PHASE: final
+  sbatch_options:
+    time: 06:00:00

@@ -1,0 +1,36 @@
+{
+  "artifact_name": "orange_recap_raw100_asha_model_weight_resume_final_e12_20260712",
+  "best_final_by_method": [
+    {
+      "adp_score": "0.718",
+      "config": "c167_lr0p001_wd0_dim64_emb128_batch2048_seed0",
+      "method": "velox"
+    },
+    {
+      "adp_score": "0.813",
+      "config": "c209_win4m_lr0p001_wd0p001_dim32_mask0p7_seed0",
+      "method": "magic"
+    },
+    {
+      "adp_score": "0.778",
+      "config": "c233_lr0p0001_wd1em05_capmedium_batch2048_neigh50_seed0",
+      "method": "orthrus"
+    },
+    {
+      "adp_score": "0.654",
+      "config": "c001_lr2em05_wd0p001_capsmall_batch512_neigh10_seed0",
+      "method": "kairos"
+    }
+  ],
+  "captured_at_utc": "2026-07-12T08:33:03+00:00",
+  "dataset": "ORANGE_RECAP_RAW",
+  "methods": [
+    "velox",
+    "magic",
+    "orthrus",
+    "kairos"
+  ],
+  "paper_faithfulness": "not paper-perfect: optimizer/RNG/data-loader state were not restored in HPO rung resumes",
+  "protocol": "ASHA sync promotion, additive model-weight resume, fresh optimizer at promoted rungs, final top-3 fresh e12 runs",
+  "remote_repo": "/mnt/tier2/project/p201223/pidsmaker-across-capture-tools"
+}

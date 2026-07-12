@@ -27,6 +27,8 @@ DEFAULT_ARRAY_CONCURRENCY = 100
 DEFAULT_SUBMIT_CHUNK_SIZE = 100
 DEFAULT_MAX_SUBMIT_JOBS_PER_ACCOUNT = 100
 RUNG_EPOCHS = (1, 2, 4, 9)
+FINAL_EPOCHS = 12
+FINAL_TOP_K = 3
 MAGIC_WINDOW_EXPORTS = {
     "1m": ("${ORANGE_EXPORT_ROOT}", 60),
     "2m": ("${P_EDR_ROOT}/capture_export/pidsmaker_export_variants/recap_raw/window_2m", 120),
@@ -178,6 +180,12 @@ RUNG_WALLTIMES = {
     "orthrus": ("01:00:00", "01:30:00", "03:00:00", "06:00:00"),
     "kairos": ("01:00:00", "01:30:00", "03:00:00", "06:00:00"),
 }
+FINAL_WALLTIMES = {
+    "magic": "06:00:00",
+    "velox": "06:00:00",
+    "orthrus": "12:00:00",
+    "kairos": "12:00:00",
+}
 
 
 def combo_name(index: int, grid: MethodGrid, combo: tuple[Any, ...]) -> str:
@@ -205,6 +213,10 @@ def ordered_combos(grid: MethodGrid) -> list[tuple[Any, ...]]:
 
 def checkpoint_dir(grid: MethodGrid, rung: int, epochs: int) -> str:
     return f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{grid.label}_recap_raw_100/r{rung}_e{epochs}_checkpoints"
+
+
+def final_checkpoint_dir(grid: MethodGrid) -> str:
+    return f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{grid.label}_recap_raw_100/final_e{FINAL_EPOCHS}_checkpoints"
 
 
 def base_sweep(
@@ -249,6 +261,26 @@ def write_sweep(
     return path
 
 
+def write_final_sweep(grid: MethodGrid, runs: list[dict[str, Any]], selection_metric: str) -> Path:
+    name = f"orange_recap_raw_{grid.label}_100_final_e{FINAL_EPOCHS}"
+    sweep = {
+        "name": name,
+        "repo_root": "${P_EDR_ROOT}/external/PIDSMaker",
+        "artifact_root": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/artifacts/final/{grid.label}",
+        "results_dir": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/results/final/{name}",
+        "checkpoint_dir": final_checkpoint_dir(grid),
+        "selection_metric": selection_metric,
+        "completion_metric": selection_metric,
+        "method": grid.method,
+        "dataset": DATASET,
+        "epochs": FINAL_EPOCHS,
+        "runs": runs,
+    }
+    path = SWEEP_DIR / f"{grid.label}_recap_raw_100_final_e{FINAL_EPOCHS}.yml"
+    path.write_text(yaml.safe_dump(sweep, sort_keys=False), encoding="utf-8")
+    return path
+
+
 def write_grid_csv(grid: MethodGrid, combos: list[tuple[Any, ...]]) -> Path:
     path = GRID_DIR / f"{grid.label}_recap_raw_100_grid.csv"
     with path.open("w", newline="", encoding="utf-8") as handle:
@@ -262,6 +294,7 @@ def write_grid_csv(grid: MethodGrid, combos: list[tuple[Any, ...]]) -> Path:
 def write_asha_config(
     grid: MethodGrid,
     rung_paths: list[Path],
+    final_sweep_path: Path,
     selection_metric: str,
     selection_mode: str,
     promotion_policy: str,
@@ -313,6 +346,17 @@ def write_asha_config(
             "MELUXINA_PIDSMAKER_AUTO_BUILD_IMAGE": 1,
         },
         "rungs": rungs,
+        "final": {
+            "name": f"final_e{FINAL_EPOCHS}",
+            "source_rung": f"r{len(RUNG_EPOCHS) - 1}_e{RUNG_EPOCHS[-1]}",
+            "top_k": FINAL_TOP_K,
+            "sweep": f"${{P_EDR_ROOT}}/{final_sweep_path.as_posix()}",
+            "results_dir": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{grid.label}_recap_raw_100/final_e{FINAL_EPOCHS}",
+            "tag": f"{grid.label}_recap_raw100_final_e{FINAL_EPOCHS}",
+            "job_name": f"{grid.label}_recap_raw100_final_e{FINAL_EPOCHS}",
+            "export_env": {"MELUXINA_PIDSMAKER_PHASE": "final"},
+            "sbatch_options": {"time": FINAL_WALLTIMES[grid.label]},
+        },
     }
     path = ASHA_DIR / f"{grid.label}_recap_raw_100_asha.yml"
     path.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
@@ -354,10 +398,12 @@ def main() -> None:
             previous_rung = rung - 1 if rung > 0 else None
             previous_epochs = RUNG_EPOCHS[rung - 1] if rung > 0 else None
             rung_paths.append(write_sweep(grid, rung, epochs, runs, args.metric, previous_rung, previous_epochs))
+        final_sweep_path = write_final_sweep(grid, runs, args.metric)
         csv_path = write_grid_csv(grid, combos)
         asha_path = write_asha_config(
             grid,
             rung_paths,
+            final_sweep_path,
             args.metric,
             args.mode,
             args.promotion_policy,
@@ -368,7 +414,7 @@ def main() -> None:
             args.max_submit_jobs_per_account,
         )
         print(
-            f"{grid.label}: {len(runs)} runs, rungs={', '.join(str(path) for path in rung_paths)}, "
+            f"{grid.label}: {len(runs)} runs, rungs={', '.join(str(path) for path in rung_paths)}, final={final_sweep_path}, "
             f"grid={csv_path}, asha={asha_path}"
         )
 

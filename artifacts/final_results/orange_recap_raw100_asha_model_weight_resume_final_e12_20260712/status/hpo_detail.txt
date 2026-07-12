@@ -1,0 +1,136 @@
+PIDSMaker ASHA HPO detail
+Repo/storage path: /mnt/tier2/project/p201223/pidsmaker-across-capture-tools
+Metric: adp_score, maximize. Leaderboard uses the deepest rung with completed results.
+Use MELUXINA_HPO_TOP=N to change the number of configs shown. Current top=5.
+
+== velox ==
+controller: not in queue
+state: updated=2026-07-12T00:32:30+00:00 policy=sync reduction_factor=2
+rungs:
+  r0_e1: done=243/243 submitted=243 ckpt=243 failed=0 cancelled=0 promoted=121/121 best_adp=0.878 cutoff=0.677 slurm=none
+  r1_e2: done=121/121 submitted=121 ckpt=121 failed=0 cancelled=0 promoted=60/60 best_adp=0.908 cutoff=0.706 slurm=none
+  r2_e4: done=60/60 submitted=60 ckpt=60 failed=0 cancelled=0 promoted=30/30 best_adp=0.878 cutoff=0.661 slurm=none
+  r3_e9: done=30/30 submitted=30 ckpt=30 failed=0 cancelled=0 promoted=0/- best_adp=0.801 cutoff=- slurm=none
+leaderboard: source=r3_e9 top=5
+  #1  adp=0.801 auc=0.78 ap=0.541 rec=0 prec=0 atk=0 val_loss=0.3379 dur=17.9m ckpt=yes c095_lr0p0003_wd0_dim128_emb128_batch2048_seed0
+      lr=0.0003 wd=0 hid=128 out=128 emb=128 batch=2048
+  #2  adp=0.775 auc=0.794 ap=0.609 rec=0 prec=0 atk=0 val_loss=0.3677 dur=17.9m ckpt=yes c167_lr0p001_wd0_dim64_emb128_batch2048_seed0
+      lr=0.001 wd=0 hid=64 out=64 emb=128 batch=2048
+  #3  adp=0.736 auc=0.749 ap=0.451 rec=0.0002 prec=0.7647 atk=0.24 val_loss=0.4364 dur=17.3m ckpt=yes c003_lr0p0001_wd0_dim64_emb64_batch2048_seed0
+      lr=0.0001 wd=0 hid=64 out=64 emb=64 batch=2048
+  #4  adp=0.731 auc=0.718 ap=0.43 rec=0.0003 prec=0.6667 atk=0.14 val_loss=0.3625 dur=18.8m ckpt=yes c086_lr0p0003_wd0_dim64_emb128_batch2048_seed0
+      lr=0.0003 wd=0 hid=64 out=64 emb=128 batch=2048
+  #5  adp=0.718 auc=0.757 ap=0.479 rec=0 prec=0 atk=0 val_loss=0.3365 dur=17m ckpt=yes c146_lr0p0003_wd1em05_dim128_emb64_batch2048_seed0
+      lr=0.0003 wd=1e-05 hid=128 out=128 emb=64 batch=2048
+promotion:
+  r0_e1 -> r1_e2: OK top121 selected; cutoff=0.677; submitted_next=121/121; missing_ckpt=0
+  r1_e2 -> r2_e4: OK top60 selected; cutoff=0.706; submitted_next=60/60; missing_ckpt=0
+  r2_e4 -> r3_e9: OK top30 selected; cutoff=0.661; submitted_next=30/30; missing_ckpt=0
+final: source=r3_e9 top_k=3 done=3/3 submitted=3 ckpt=3 failed=0 best_adp=0.718 slurm=none
+  planned: c095_lr0p0003_wd0_dim128_emb128_batch2048_seed0, c167_lr0p001_wd0_dim64_emb128_batch2048_seed0, c003_lr0p0001_wd0_dim64_emb64_batch2048_seed0
+leaderboard: source=final_e12 top=3
+  #1  adp=0.718 auc=0.773 ap=0.514 rec=0 prec=0 atk=0 val_loss=0.3489 dur=40.9m ckpt=yes c167_lr0p001_wd0_dim64_emb128_batch2048_seed0
+      lr=0.001 wd=0 hid=64 out=64 emb=128 batch=2048
+  #2  adp=0.689 auc=0.774 ap=0.565 rec=0 prec=0 atk=0 val_loss=0.3327 dur=42.8m ckpt=yes c095_lr0p0003_wd0_dim128_emb128_batch2048_seed0
+      lr=0.0003 wd=0 hid=128 out=128 emb=128 batch=2048
+  #3  adp=0.635 auc=0.757 ap=0.449 rec=0.0003 prec=0.2375 atk=0.48 val_loss=0.4098 dur=40m ckpt=yes c003_lr0p0001_wd0_dim64_emb64_batch2048_seed0
+      lr=0.0001 wd=0 hid=64 out=64 emb=64 batch=2048
+
+== magic ==
+controller: not in queue
+state: updated=2026-07-12T00:45:16+00:00 policy=sync reduction_factor=2
+rungs:
+  r0_e1: done=243/243 submitted=243 ckpt=243 failed=0 cancelled=0 promoted=121/121 best_adp=0.842 cutoff=0.244 slurm=none
+  r1_e2: done=121/121 submitted=121 ckpt=121 failed=0 cancelled=0 promoted=60/60 best_adp=0.834 cutoff=0.287 slurm=none
+  r2_e4: done=60/60 submitted=60 ckpt=60 failed=0 cancelled=0 promoted=30/30 best_adp=0.852 cutoff=0.422 slurm=none
+  r3_e9: done=30/30 submitted=30 ckpt=30 failed=0 cancelled=0 promoted=0/- best_adp=0.839 cutoff=- slurm=none
+leaderboard: source=r3_e9 top=5
+  #1  adp=0.839 auc=0.63 ap=0.56 rec=0.5631 prec=0.2198 atk=1 val_loss=0 dur=11.3m ckpt=yes c209_win4m_lr0p001_wd0p001_dim32_mask0p7_seed0
+      win=4m lr=0.001 wd=0.001 hid=32 out=32 mask=0.7
+  #2  adp=0.818 auc=0.666 ap=0.585 rec=0.5947 prec=0.2008 atk=1 val_loss=0 dur=13.4m ckpt=yes c195_win4m_lr0p001_wd0p0001_dim128_mask0p3_seed0
+      win=4m lr=0.001 wd=0.0001 hid=128 out=128 mask=0.3
+  #3  adp=0.77 auc=0.653 ap=0.542 rec=0.5919 prec=0.2253 atk=1 val_loss=0 dur=11.3m ckpt=yes c207_win4m_lr0p001_wd0p001_dim32_mask0p3_seed0
+      win=4m lr=0.001 wd=0.001 hid=32 out=32 mask=0.3
+  #4  adp=0.719 auc=0.681 ap=0.572 rec=0.5646 prec=0.206 atk=1 val_loss=0 dur=11.5m ckpt=yes c200_win4m_lr0p001_wd0p0005_dim32_mask0p7_seed0
+      win=4m lr=0.001 wd=0.0005 hid=32 out=32 mask=0.7
+  #5  adp=0.649 auc=0.652 ap=0.56 rec=0.5683 prec=0.2171 atk=1 val_loss=0 dur=11.3m ckpt=yes c208_win4m_lr0p001_wd0p001_dim32_mask0p5_seed0
+      win=4m lr=0.001 wd=0.001 hid=32 out=32 mask=0.5
+promotion:
+  r0_e1 -> r1_e2: OK top121 selected; cutoff=0.244; submitted_next=121/121; missing_ckpt=0
+  r1_e2 -> r2_e4: OK top60 selected; cutoff=0.287; submitted_next=60/60; missing_ckpt=0
+  r2_e4 -> r3_e9: OK top30 selected; cutoff=0.422; submitted_next=30/30; missing_ckpt=0
+final: source=r3_e9 top_k=3 done=3/3 submitted=3 ckpt=3 failed=0 best_adp=0.813 slurm=none
+  planned: c209_win4m_lr0p001_wd0p001_dim32_mask0p7_seed0, c195_win4m_lr0p001_wd0p0001_dim128_mask0p3_seed0, c207_win4m_lr0p001_wd0p001_dim32_mask0p3_seed0
+leaderboard: source=final_e12 top=3
+  #1  adp=0.813 auc=0.647 ap=0.521 rec=0.5651 prec=0.2276 atk=1 val_loss=0 dur=30.6m ckpt=yes c209_win4m_lr0p001_wd0p001_dim32_mask0p7_seed0
+      win=4m lr=0.001 wd=0.001 hid=32 out=32 mask=0.7
+  #2  adp=0.726 auc=0.648 ap=0.486 rec=0.615 prec=0.1898 atk=1 val_loss=0 dur=30.2m ckpt=yes c207_win4m_lr0p001_wd0p001_dim32_mask0p3_seed0
+      win=4m lr=0.001 wd=0.001 hid=32 out=32 mask=0.3
+  #3  adp=0.679 auc=0.663 ap=0.568 rec=0.5955 prec=0.2058 atk=1 val_loss=0 dur=37.5m ckpt=yes c195_win4m_lr0p001_wd0p0001_dim128_mask0p3_seed0
+      win=4m lr=0.001 wd=0.0001 hid=128 out=128 mask=0.3
+
+== orthrus ==
+controller: not in queue
+state: updated=2026-07-12T00:40:44+00:00 policy=sync reduction_factor=2
+rungs:
+  r0_e1: done=243/243 submitted=243 ckpt=243 failed=0 cancelled=0 promoted=121/121 best_adp=0.725 cutoff=0.41 slurm=none
+  r1_e2: done=121/121 submitted=121 ckpt=121 failed=0 cancelled=0 promoted=60/60 best_adp=0.8 cutoff=0.477 slurm=none
+  r2_e4: done=60/60 submitted=60 ckpt=60 failed=0 cancelled=0 promoted=30/30 best_adp=0.799 cutoff=0.563 slurm=none
+  r3_e9: done=30/30 submitted=30 ckpt=30 failed=0 cancelled=0 promoted=0/- best_adp=0.774 cutoff=- slurm=none
+leaderboard: source=r3_e9 top=5
+  #1  adp=0.774 auc=0.604 ap=0.365 rec=0.0001 prec=1 atk=0.1 val_loss=0.8814 dur=32.8m ckpt=yes c179_lr0p0001_wd0_capmedium_batch2048_neigh50_seed0
+      lr=0.0001 wd=0 out=128 emb=128 batch=2048 neigh=50 cap=medium
+  #2  adp=0.764 auc=0.613 ap=0.364 rec=0.0001 prec=1 atk=0.05 val_loss=0.8872 dur=32.8m ckpt=yes c233_lr0p0001_wd1em05_capmedium_batch2048_neigh50_seed0
+      lr=0.0001 wd=1e-05 out=128 emb=128 batch=2048 neigh=50 cap=medium
+  #3  adp=0.73 auc=0.586 ap=0.352 rec=0.0001 prec=1 atk=0.05 val_loss=0.8817 dur=32.9m ckpt=yes c206_lr0p0001_wd1em06_capmedium_batch2048_neigh50_seed0
+      lr=0.0001 wd=1e-06 out=128 emb=128 batch=2048 neigh=50 cap=medium
+  #4  adp=0.698 auc=0.62 ap=0.346 rec=0.0001 prec=1 atk=0.05 val_loss=0.8915 dur=39.2m ckpt=yes c242_lr0p0001_wd1em05_caplarge_batch2048_neigh50_seed0
+      lr=0.0001 wd=1e-05 out=256 emb=256 batch=2048 neigh=50 cap=large
+  #5  adp=0.688 auc=0.575 ap=0.319 rec=0.0001 prec=0.875 atk=0.14 val_loss=0.8667 dur=28.2m ckpt=yes c178_lr0p0001_wd0_capmedium_batch2048_neigh20_seed0
+      lr=0.0001 wd=0 out=128 emb=128 batch=2048 neigh=20 cap=medium
+promotion:
+  r0_e1 -> r1_e2: OK top121 selected; cutoff=0.41; submitted_next=121/121; missing_ckpt=0
+  r1_e2 -> r2_e4: OK top60 selected; cutoff=0.477; submitted_next=60/60; missing_ckpt=0
+  r2_e4 -> r3_e9: OK top30 selected; cutoff=0.563; submitted_next=30/30; missing_ckpt=0
+final: source=r3_e9 top_k=3 done=3/3 submitted=3 ckpt=3 failed=0 best_adp=0.778 slurm=none
+  planned: c179_lr0p0001_wd0_capmedium_batch2048_neigh50_seed0, c233_lr0p0001_wd1em05_capmedium_batch2048_neigh50_seed0, c206_lr0p0001_wd1em06_capmedium_batch2048_neigh50_seed0
+leaderboard: source=final_e12 top=3
+  #1  adp=0.778 auc=0.609 ap=0.365 rec=0.0001 prec=1 atk=0.05 val_loss=0.8849 dur=84.2m ckpt=yes c233_lr0p0001_wd1em05_capmedium_batch2048_neigh50_seed0
+      lr=0.0001 wd=1e-05 out=128 emb=128 batch=2048 neigh=50 cap=medium
+  #2  adp=0.733 auc=0.597 ap=0.353 rec=0.0001 prec=1 atk=0.1 val_loss=0.8854 dur=84.6m ckpt=yes c179_lr0p0001_wd0_capmedium_batch2048_neigh50_seed0
+      lr=0.0001 wd=0 out=128 emb=128 batch=2048 neigh=50 cap=medium
+  #3  adp=0.725 auc=0.596 ap=0.346 rec=0.0001 prec=1 atk=0.05 val_loss=0.8853 dur=78.9m ckpt=yes c206_lr0p0001_wd1em06_capmedium_batch2048_neigh50_seed0
+      lr=0.0001 wd=1e-06 out=128 emb=128 batch=2048 neigh=50 cap=medium
+
+== kairos ==
+controller: not in queue
+state: updated=2026-07-12T03:04:02+00:00 policy=sync reduction_factor=2
+rungs:
+  r0_e1: done=243/243 submitted=243 ckpt=243 failed=0 cancelled=0 promoted=121/121 best_adp=0.888 cutoff=0.387 slurm=none
+  r1_e2: done=121/121 submitted=121 ckpt=121 failed=0 cancelled=0 promoted=60/60 best_adp=0.892 cutoff=0.675 slurm=none
+  r2_e4: done=60/60 submitted=60 ckpt=60 failed=0 cancelled=0 promoted=30/30 best_adp=0.889 cutoff=0.725 slurm=none
+  r3_e9: done=30/30 submitted=30 ckpt=30 failed=0 cancelled=0 promoted=0/- best_adp=0.837 cutoff=- slurm=none
+leaderboard: source=r3_e9 top=5
+  #1  adp=0.837 auc=0.647 ap=0.35 rec=0 prec=0 atk=0 val_loss=1.0491 dur=69.5m ckpt=yes c001_lr2em05_wd0p001_capsmall_batch512_neigh10_seed0
+      lr=2e-05 wd=0.001 hid=64 out=64 mem=64 time=64 batch=512 neigh=10 cap=small
+  #2  adp=0.834 auc=0.651 ap=0.353 rec=0 prec=0 atk=0 val_loss=1.0396 dur=71.2m ckpt=yes c002_lr2em05_wd0p001_capsmall_batch512_neigh20_seed0
+      lr=2e-05 wd=0.001 hid=64 out=64 mem=64 time=64 batch=512 neigh=20 cap=small
+  #3  adp=0.817 auc=0.595 ap=0.325 rec=0 prec=0 atk=0 val_loss=1.0202 dur=56.5m ckpt=yes c103_lr5em05_wd0p001_caplarge_batch1024_neigh10_seed0
+      lr=5e-05 wd=0.001 hid=128 out=128 mem=128 time=128 batch=1024 neigh=10 cap=large
+  #4  adp=0.805 auc=0.597 ap=0.323 rec=0 prec=0 atk=0 val_loss=0.9483 dur=70.9m ckpt=yes c091_lr5em05_wd0p001_capdefault_batch512_neigh10_seed0
+      lr=5e-05 wd=0.001 hid=100 out=100 mem=100 time=100 batch=512 neigh=10 cap=default
+  #5  adp=0.804 auc=0.592 ap=0.314 rec=0 prec=0 atk=0 val_loss=1.0177 dur=57.8m ckpt=yes c095_lr5em05_wd0p001_capdefault_batch1024_neigh20_seed0
+      lr=5e-05 wd=0.001 hid=100 out=100 mem=100 time=100 batch=1024 neigh=20 cap=default
+promotion:
+  r0_e1 -> r1_e2: OK top121 selected; cutoff=0.387; submitted_next=121/121; missing_ckpt=0
+  r1_e2 -> r2_e4: OK top60 selected; cutoff=0.675; submitted_next=60/60; missing_ckpt=0
+  r2_e4 -> r3_e9: OK top30 selected; cutoff=0.725; submitted_next=30/30; missing_ckpt=0
+final: source=r3_e9 top_k=3 done=3/3 submitted=3 ckpt=3 failed=0 best_adp=0.654 slurm=none
+  planned: c001_lr2em05_wd0p001_capsmall_batch512_neigh10_seed0, c002_lr2em05_wd0p001_capsmall_batch512_neigh20_seed0, c103_lr5em05_wd0p001_caplarge_batch1024_neigh10_seed0
+leaderboard: source=final_e12 top=3
+  #1  adp=0.654 auc=0.624 ap=0.334 rec=0 prec=0 atk=0 val_loss=1.0103 dur=190.4m ckpt=yes c001_lr2em05_wd0p001_capsmall_batch512_neigh10_seed0
+      lr=2e-05 wd=0.001 hid=64 out=64 mem=64 time=64 batch=512 neigh=10 cap=small
+  #2  adp=0.642 auc=0.639 ap=0.338 rec=0 prec=0 atk=0 val_loss=1.0012 dur=204m ckpt=yes c002_lr2em05_wd0p001_capsmall_batch512_neigh20_seed0
+      lr=2e-05 wd=0.001 hid=64 out=64 mem=64 time=64 batch=512 neigh=20 cap=small
+  #3  adp=0.616 auc=0.596 ap=0.323 rec=0 prec=0 atk=0 val_loss=1.0214 dur=156m ckpt=yes c103_lr5em05_wd0p001_caplarge_batch1024_neigh10_seed0
+      lr=5e-05 wd=0.001 hid=128 out=128 mem=128 time=128 batch=1024 neigh=10 cap=large
