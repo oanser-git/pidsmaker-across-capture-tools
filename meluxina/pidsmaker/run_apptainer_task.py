@@ -145,6 +145,10 @@ def build_command(sweep: Dict[str, Any], run: Dict[str, Any], args: argparse.Nam
     phase = args.phase or "run"
     run_name = safe_name(str(run["name"]))
     artifact = safe_name("{}_{}_{}".format(sweep["name"], run_name, phase), max_length=200)
+    overrides = run.get("overrides") or {}
+    python_hash_seed = os.environ.get("MELUXINA_PIDSMAKER_PYTHONHASHSEED")
+    if python_hash_seed is None and overrides.get("training.seed") is not None:
+        python_hash_seed = str(overrides["training.seed"])
 
     artifact_root.mkdir(parents=True, exist_ok=True)
     task_cache_root = artifact_root / "_task_cache" / artifact
@@ -161,6 +165,9 @@ def build_command(sweep: Dict[str, Any], run: Dict[str, Any], args: argparse.Nam
     resume_checkpoint_dir = (
         Path(str(sweep["resume_checkpoint_dir"])).resolve() if sweep.get("resume_checkpoint_dir") else None
     )
+    checkpoint_mode = str(sweep.get("checkpoint_mode") or "model_optimizer").lower()
+    if checkpoint_mode not in {"model_optimizer", "full_state"}:
+        raise SystemExit("Unsupported checkpoint_mode: {}".format(checkpoint_mode))
     host_save_checkpoint = task_cache_root / "training_checkpoint.pt" if checkpoint_dir else None
     persist_checkpoint = checkpoint_dir / f"{run_name}.pt" if checkpoint_dir else None
     host_resume_checkpoint = None
@@ -184,7 +191,7 @@ def build_command(sweep: Dict[str, Any], run: Dict[str, Any], args: argparse.Nam
     ]
     if os.environ.get("MELUXINA_PIDSMAKER_CPU") == "1":
         inner.append("--cpu")
-    for key, value in dict(run.get("overrides") or {}).items():
+    for key, value in dict(overrides).items():
         inner.append("--{}={}".format(key, cli_value(value)))
     for extra_arg in list(sweep.get("extra_args") or []):
         inner.append(str(extra_arg))
@@ -229,13 +236,15 @@ def build_command(sweep: Dict[str, Any], run: Dict[str, Any], args: argparse.Nam
         "persist_checkpoint": str(persist_checkpoint) if persist_checkpoint else None,
         "host_resume_checkpoint": str(host_resume_checkpoint) if host_resume_checkpoint else None,
         "resume_checkpoint": str(resume_checkpoint_dir / f"{run_name}.pt") if resume_checkpoint_dir else None,
+        "checkpoint_mode": checkpoint_mode,
         "method": str(sweep["method"]),
         "dataset": str(sweep["dataset"]),
         "epochs": int(sweep.get("epochs", 12)),
         "orange_export_root": str(export_root),
         "export_variant": run.get("export_variant"),
         "export_window_size_seconds": run.get("export_window_size_seconds"),
-        "overrides": run.get("overrides") or {},
+        "overrides": overrides,
+        "python_hash_seed": python_hash_seed,
         "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
         "slurm_array_task_id": os.environ.get("SLURM_ARRAY_TASK_ID"),
         "node": os.environ.get("SLURMD_NODENAME"),
@@ -270,10 +279,18 @@ def run_command(command: List[str], meta: Dict[str, Any], results_dir: Path) -> 
     env["APPTAINERENV_NLTK_DATA"] = "{}:/home/artifacts/nltk_data:/opt/nltk_data".format(meta["container_nltk_data"])
     env["APPTAINERENV_MPLCONFIGDIR"] = str(meta["container_matplotlib_config"])
     env["APPTAINERENV_XDG_CACHE_HOME"] = str(meta["container_xdg_cache"])
+    if meta.get("python_hash_seed"):
+        env["PYTHONHASHSEED"] = str(meta["python_hash_seed"])
+        env["APPTAINERENV_PYTHONHASHSEED"] = str(meta["python_hash_seed"])
     if meta.get("container_save_checkpoint"):
         env["APPTAINERENV_PIDSMAKER_SAVE_CHECKPOINT"] = str(meta["container_save_checkpoint"])
+        if meta.get("checkpoint_mode") == "full_state":
+            env["APPTAINERENV_PIDSMAKER_CHECKPOINT_FULL_STATE"] = "1"
     if meta.get("container_resume_checkpoint"):
         env["APPTAINERENV_PIDSMAKER_RESUME_CHECKPOINT"] = str(meta["container_resume_checkpoint"])
+        if meta.get("checkpoint_mode") == "full_state":
+            env["APPTAINERENV_PIDSMAKER_RESUME_FULL_STATE"] = "1"
+            env["APPTAINERENV_PIDSMAKER_RESUME_OPTIMIZER"] = "1"
     proc = subprocess.Popen(
         command,
         stdout=subprocess.PIPE,

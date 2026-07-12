@@ -1,0 +1,2443 @@
+name: orange_recap_raw_velox_100_sync_eta2_full_state_e8_asha_r1_e2
+repo_root: ${P_EDR_ROOT}/external/PIDSMaker
+artifact_root: ${P_EDR_ROOT}/meluxina/pidsmaker/artifacts/asha/velox_recap_raw_100_sync_eta2_full_state_e8
+results_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/results/asha/orange_recap_raw_velox_100_sync_eta2_full_state_e8_asha_r1_e2
+checkpoint_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/velox_recap_raw_100_sync_eta2_full_state_e8/r1_e2_checkpoints
+checkpoint_mode: full_state
+selection_metric: adp_score
+completion_metric: adp_score
+method: velox
+dataset: ORANGE_RECAP_RAW
+epochs: 2
+resume_checkpoint_dir: ${P_EDR_ROOT}/meluxina/pidsmaker/asha_runs/velox_recap_raw_100_sync_eta2_full_state_e8/r0_e1_checkpoints
+runs:
+- name: c000_lr0p0001_wd1em05_dim128_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c001_lr0p0001_wd0_dim64_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c002_lr0p0001_wd0_dim64_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c003_lr0p0001_wd0_dim64_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c004_lr0p0001_wd0_dim64_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c005_lr0p0001_wd0_dim64_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c006_lr0p0001_wd0_dim64_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c007_lr0p0001_wd0_dim64_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c008_lr0p0001_wd0_dim64_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c009_lr0p0001_wd0_dim64_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c010_lr0p0001_wd0_dim128_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c011_lr0p0001_wd0_dim128_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c012_lr0p0001_wd0_dim128_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c013_lr0p0001_wd0_dim128_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c014_lr0p0001_wd0_dim128_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c015_lr0p0001_wd0_dim128_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c016_lr0p0001_wd0_dim128_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c017_lr0p0001_wd0_dim128_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c018_lr0p0001_wd0_dim128_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c019_lr0p0001_wd0_dim256_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c020_lr0p0001_wd0_dim256_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c021_lr0p0001_wd0_dim256_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c022_lr0p0001_wd0_dim256_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c023_lr0p0001_wd0_dim256_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c024_lr0p0001_wd0_dim256_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c025_lr0p0001_wd0_dim256_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c026_lr0p0001_wd0_dim256_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c027_lr0p0001_wd0_dim256_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c028_lr0p0001_wd1em06_dim64_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c029_lr0p0001_wd1em06_dim64_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c030_lr0p0001_wd1em06_dim64_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c031_lr0p0001_wd1em06_dim64_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c032_lr0p0001_wd1em06_dim64_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c033_lr0p0001_wd1em06_dim64_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c034_lr0p0001_wd1em06_dim64_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c035_lr0p0001_wd1em06_dim64_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c036_lr0p0001_wd1em06_dim64_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c037_lr0p0001_wd1em06_dim128_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c038_lr0p0001_wd1em06_dim128_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c039_lr0p0001_wd1em06_dim128_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c040_lr0p0001_wd1em06_dim128_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c041_lr0p0001_wd1em06_dim128_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c042_lr0p0001_wd1em06_dim128_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c043_lr0p0001_wd1em06_dim128_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c044_lr0p0001_wd1em06_dim128_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c045_lr0p0001_wd1em06_dim128_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c046_lr0p0001_wd1em06_dim256_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c047_lr0p0001_wd1em06_dim256_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c048_lr0p0001_wd1em06_dim256_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c049_lr0p0001_wd1em06_dim256_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c050_lr0p0001_wd1em06_dim256_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c051_lr0p0001_wd1em06_dim256_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c052_lr0p0001_wd1em06_dim256_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c053_lr0p0001_wd1em06_dim256_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c054_lr0p0001_wd1em06_dim256_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c055_lr0p0001_wd1em05_dim64_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c056_lr0p0001_wd1em05_dim64_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c057_lr0p0001_wd1em05_dim64_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c058_lr0p0001_wd1em05_dim64_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c059_lr0p0001_wd1em05_dim64_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c060_lr0p0001_wd1em05_dim64_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c061_lr0p0001_wd1em05_dim64_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c062_lr0p0001_wd1em05_dim64_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c063_lr0p0001_wd1em05_dim64_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c064_lr0p0001_wd1em05_dim128_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c065_lr0p0001_wd1em05_dim128_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c066_lr0p0001_wd1em05_dim128_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c067_lr0p0001_wd1em05_dim128_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c068_lr0p0001_wd1em05_dim128_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c069_lr0p0001_wd1em05_dim128_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c070_lr0p0001_wd1em05_dim128_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c071_lr0p0001_wd1em05_dim128_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c072_lr0p0001_wd1em05_dim256_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c073_lr0p0001_wd1em05_dim256_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c074_lr0p0001_wd1em05_dim256_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c075_lr0p0001_wd1em05_dim256_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c076_lr0p0001_wd1em05_dim256_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c077_lr0p0001_wd1em05_dim256_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c078_lr0p0001_wd1em05_dim256_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c079_lr0p0001_wd1em05_dim256_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c080_lr0p0001_wd1em05_dim256_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c081_lr0p0003_wd0_dim64_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c082_lr0p0003_wd0_dim64_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c083_lr0p0003_wd0_dim64_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c084_lr0p0003_wd0_dim64_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c085_lr0p0003_wd0_dim64_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c086_lr0p0003_wd0_dim64_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c087_lr0p0003_wd0_dim64_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c088_lr0p0003_wd0_dim64_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c089_lr0p0003_wd0_dim64_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c090_lr0p0003_wd0_dim128_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c091_lr0p0003_wd0_dim128_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c092_lr0p0003_wd0_dim128_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c093_lr0p0003_wd0_dim128_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c094_lr0p0003_wd0_dim128_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c095_lr0p0003_wd0_dim128_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c096_lr0p0003_wd0_dim128_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c097_lr0p0003_wd0_dim128_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c098_lr0p0003_wd0_dim128_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c099_lr0p0003_wd0_dim256_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c100_lr0p0003_wd0_dim256_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c101_lr0p0003_wd0_dim256_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c102_lr0p0003_wd0_dim256_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c103_lr0p0003_wd0_dim256_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c104_lr0p0003_wd0_dim256_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c105_lr0p0003_wd0_dim256_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c106_lr0p0003_wd0_dim256_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c107_lr0p0003_wd0_dim256_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c108_lr0p0003_wd1em06_dim64_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c109_lr0p0003_wd1em06_dim64_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c110_lr0p0003_wd1em06_dim64_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c111_lr0p0003_wd1em06_dim64_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c112_lr0p0003_wd1em06_dim64_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c113_lr0p0003_wd1em06_dim64_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c114_lr0p0003_wd1em06_dim64_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c115_lr0p0003_wd1em06_dim64_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c116_lr0p0003_wd1em06_dim64_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c117_lr0p0003_wd1em06_dim128_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c118_lr0p0003_wd1em06_dim128_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c119_lr0p0003_wd1em06_dim128_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c120_lr0p0003_wd1em06_dim128_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c121_lr0p0003_wd1em06_dim128_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c122_lr0p0003_wd1em06_dim128_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c123_lr0p0003_wd1em06_dim128_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c124_lr0p0003_wd1em06_dim128_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c125_lr0p0003_wd1em06_dim128_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c126_lr0p0003_wd1em06_dim256_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c127_lr0p0003_wd1em06_dim256_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c128_lr0p0003_wd1em06_dim256_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c129_lr0p0003_wd1em06_dim256_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c130_lr0p0003_wd1em06_dim256_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c131_lr0p0003_wd1em06_dim256_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c132_lr0p0003_wd1em06_dim256_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c133_lr0p0003_wd1em06_dim256_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c134_lr0p0003_wd1em06_dim256_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c135_lr0p0003_wd1em05_dim64_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c136_lr0p0003_wd1em05_dim64_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c137_lr0p0003_wd1em05_dim64_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c138_lr0p0003_wd1em05_dim64_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c139_lr0p0003_wd1em05_dim64_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c140_lr0p0003_wd1em05_dim64_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c141_lr0p0003_wd1em05_dim64_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c142_lr0p0003_wd1em05_dim64_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c143_lr0p0003_wd1em05_dim64_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c144_lr0p0003_wd1em05_dim128_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c145_lr0p0003_wd1em05_dim128_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c146_lr0p0003_wd1em05_dim128_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c147_lr0p0003_wd1em05_dim128_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c148_lr0p0003_wd1em05_dim128_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c149_lr0p0003_wd1em05_dim128_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c150_lr0p0003_wd1em05_dim128_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c151_lr0p0003_wd1em05_dim128_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c152_lr0p0003_wd1em05_dim128_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c153_lr0p0003_wd1em05_dim256_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c154_lr0p0003_wd1em05_dim256_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c155_lr0p0003_wd1em05_dim256_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c156_lr0p0003_wd1em05_dim256_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c157_lr0p0003_wd1em05_dim256_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c158_lr0p0003_wd1em05_dim256_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c159_lr0p0003_wd1em05_dim256_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c160_lr0p0003_wd1em05_dim256_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c161_lr0p0003_wd1em05_dim256_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.0003
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c162_lr0p001_wd0_dim64_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c163_lr0p001_wd0_dim64_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c164_lr0p001_wd0_dim64_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c165_lr0p001_wd0_dim64_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c166_lr0p001_wd0_dim64_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c167_lr0p001_wd0_dim64_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c168_lr0p001_wd0_dim64_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c169_lr0p001_wd0_dim64_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c170_lr0p001_wd0_dim64_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c171_lr0p001_wd0_dim128_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c172_lr0p001_wd0_dim128_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c173_lr0p001_wd0_dim128_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c174_lr0p001_wd0_dim128_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c175_lr0p001_wd0_dim128_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c176_lr0p001_wd0_dim128_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c177_lr0p001_wd0_dim128_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c178_lr0p001_wd0_dim128_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c179_lr0p001_wd0_dim128_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c180_lr0p001_wd0_dim256_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c181_lr0p001_wd0_dim256_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c182_lr0p001_wd0_dim256_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c183_lr0p001_wd0_dim256_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c184_lr0p001_wd0_dim256_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c185_lr0p001_wd0_dim256_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c186_lr0p001_wd0_dim256_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c187_lr0p001_wd0_dim256_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c188_lr0p001_wd0_dim256_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 0.0
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c189_lr0p001_wd1em06_dim64_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c190_lr0p001_wd1em06_dim64_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c191_lr0p001_wd1em06_dim64_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c192_lr0p001_wd1em06_dim64_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c193_lr0p001_wd1em06_dim64_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c194_lr0p001_wd1em06_dim64_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c195_lr0p001_wd1em06_dim64_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c196_lr0p001_wd1em06_dim64_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c197_lr0p001_wd1em06_dim64_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c198_lr0p001_wd1em06_dim128_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c199_lr0p001_wd1em06_dim128_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c200_lr0p001_wd1em06_dim128_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c201_lr0p001_wd1em06_dim128_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c202_lr0p001_wd1em06_dim128_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c203_lr0p001_wd1em06_dim128_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c204_lr0p001_wd1em06_dim128_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c205_lr0p001_wd1em06_dim128_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c206_lr0p001_wd1em06_dim128_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c207_lr0p001_wd1em06_dim256_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c208_lr0p001_wd1em06_dim256_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c209_lr0p001_wd1em06_dim256_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c210_lr0p001_wd1em06_dim256_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c211_lr0p001_wd1em06_dim256_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c212_lr0p001_wd1em06_dim256_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c213_lr0p001_wd1em06_dim256_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c214_lr0p001_wd1em06_dim256_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c215_lr0p001_wd1em06_dim256_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-06
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c216_lr0p001_wd1em05_dim64_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c217_lr0p001_wd1em05_dim64_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c218_lr0p001_wd1em05_dim64_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c219_lr0p001_wd1em05_dim64_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c220_lr0p001_wd1em05_dim64_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c221_lr0p001_wd1em05_dim64_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c222_lr0p001_wd1em05_dim64_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c223_lr0p001_wd1em05_dim64_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c224_lr0p001_wd1em05_dim64_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 64
+    training.node_out_dim: 64
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c225_lr0p001_wd1em05_dim128_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c226_lr0p001_wd1em05_dim128_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c227_lr0p001_wd1em05_dim128_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c228_lr0p001_wd1em05_dim128_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c229_lr0p001_wd1em05_dim128_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c230_lr0p001_wd1em05_dim128_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c231_lr0p001_wd1em05_dim128_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c232_lr0p001_wd1em05_dim128_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c233_lr0p001_wd1em05_dim128_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 128
+    training.node_out_dim: 128
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c234_lr0p001_wd1em05_dim256_emb64_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c235_lr0p001_wd1em05_dim256_emb64_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c236_lr0p001_wd1em05_dim256_emb64_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 64
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c237_lr0p001_wd1em05_dim256_emb128_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c238_lr0p001_wd1em05_dim256_emb128_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c239_lr0p001_wd1em05_dim256_emb128_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 128
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048
+- name: c240_lr0p001_wd1em05_dim256_emb256_batch512_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 512
+- name: c241_lr0p001_wd1em05_dim256_emb256_batch1024_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 1024
+- name: c242_lr0p001_wd1em05_dim256_emb256_batch2048_seed0
+  overrides:
+    training.seed: 0
+    featurization.seed: 0
+    training.lr: 0.001
+    training.weight_decay: 1.0e-05
+    training.node_hid_dim: 256
+    training.node_out_dim: 256
+    featurization.emb_dim: 256
+    batching.intra_graph_batching.edges.intra_graph_batch_size: 2048

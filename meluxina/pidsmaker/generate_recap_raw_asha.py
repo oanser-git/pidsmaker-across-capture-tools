@@ -26,7 +26,7 @@ DEFAULT_SUBMIT_ACCOUNTS = ("p201223", "p201219")
 DEFAULT_ARRAY_CONCURRENCY = 100
 DEFAULT_SUBMIT_CHUNK_SIZE = 100
 DEFAULT_MAX_SUBMIT_JOBS_PER_ACCOUNT = 100
-RUNG_EPOCHS = (1, 2, 4, 9)
+DEFAULT_RUNG_EPOCHS = (1, 2, 4, 9)
 FINAL_EPOCHS = 12
 FINAL_TOP_K = 3
 MAGIC_WINDOW_EXPORTS = {
@@ -39,6 +39,27 @@ MAGIC_WINDOW_EXPORTS = {
 def token(value: Any) -> str:
     text = f"{value:g}" if isinstance(value, float | int) else str(value)
     return text.replace(".", "p").replace("-", "m")
+
+
+def parse_rung_epochs(value: str) -> tuple[int, ...]:
+    epochs = tuple(int(item.strip()) for item in value.split(",") if item.strip())
+    if len(epochs) < 2:
+        raise argparse.ArgumentTypeError("at least two rung epochs are required")
+    if any(epoch <= 0 for epoch in epochs):
+        raise argparse.ArgumentTypeError("rung epochs must be positive")
+    if tuple(sorted(epochs)) != epochs or len(set(epochs)) != len(epochs):
+        raise argparse.ArgumentTypeError("rung epochs must be strictly increasing")
+    return epochs
+
+
+def run_namespace(grid: "MethodGrid", run_suffix: str) -> str:
+    suffix = f"_{run_suffix}" if run_suffix else ""
+    return f"{grid.label}_recap_raw_100{suffix}"
+
+
+def sweep_name(grid: "MethodGrid", run_suffix: str, kind: str) -> str:
+    suffix = f"_{run_suffix}" if run_suffix else ""
+    return f"orange_recap_raw_{grid.label}_100{suffix}_{kind}"
 
 
 @dataclass(frozen=True)
@@ -211,29 +232,34 @@ def ordered_combos(grid: MethodGrid) -> list[tuple[Any, ...]]:
     return [grid.default] + [combo for combo in all_combos if combo != grid.default]
 
 
-def checkpoint_dir(grid: MethodGrid, rung: int, epochs: int) -> str:
-    return f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{grid.label}_recap_raw_100/r{rung}_e{epochs}_checkpoints"
+def checkpoint_dir(grid: MethodGrid, run_suffix: str, rung: int, epochs: int) -> str:
+    namespace = run_namespace(grid, run_suffix)
+    return f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{namespace}/r{rung}_e{epochs}_checkpoints"
 
 
-def final_checkpoint_dir(grid: MethodGrid) -> str:
-    return f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{grid.label}_recap_raw_100/final_e{FINAL_EPOCHS}_checkpoints"
+def final_checkpoint_dir(grid: MethodGrid, run_suffix: str) -> str:
+    namespace = run_namespace(grid, run_suffix)
+    return f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{namespace}/final_e{FINAL_EPOCHS}_checkpoints"
 
 
 def base_sweep(
     grid: MethodGrid,
+    run_suffix: str,
     rung: int,
     epochs: int,
     selection_metric: str,
+    checkpoint_mode: str,
     previous_rung: int | None = None,
     previous_epochs: int | None = None,
 ) -> dict[str, Any]:
-    name = f"orange_recap_raw_{grid.label}_100_asha_r{rung}_e{epochs}"
+    name = sweep_name(grid, run_suffix, f"asha_r{rung}_e{epochs}")
     sweep = {
         "name": name,
         "repo_root": "${P_EDR_ROOT}/external/PIDSMaker",
-        "artifact_root": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/artifacts/asha/{grid.label}",
+        "artifact_root": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/artifacts/asha/{run_namespace(grid, run_suffix)}",
         "results_dir": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/results/asha/{name}",
-        "checkpoint_dir": checkpoint_dir(grid, rung, epochs),
+        "checkpoint_dir": checkpoint_dir(grid, run_suffix, rung, epochs),
+        "checkpoint_mode": checkpoint_mode,
         "selection_metric": selection_metric,
         "completion_metric": selection_metric,
         "method": grid.method,
@@ -241,34 +267,53 @@ def base_sweep(
         "epochs": epochs,
     }
     if previous_rung is not None and previous_epochs is not None:
-        sweep["resume_checkpoint_dir"] = checkpoint_dir(grid, previous_rung, previous_epochs)
+        sweep["resume_checkpoint_dir"] = checkpoint_dir(grid, run_suffix, previous_rung, previous_epochs)
     return sweep
 
 
 def write_sweep(
     grid: MethodGrid,
+    run_suffix: str,
     rung: int,
     epochs: int,
     runs: list[dict[str, Any]],
     selection_metric: str,
+    checkpoint_mode: str,
     previous_rung: int | None = None,
     previous_epochs: int | None = None,
 ) -> Path:
-    sweep = base_sweep(grid, rung, epochs, selection_metric, previous_rung, previous_epochs)
+    sweep = base_sweep(
+        grid,
+        run_suffix,
+        rung,
+        epochs,
+        selection_metric,
+        checkpoint_mode,
+        previous_rung,
+        previous_epochs,
+    )
     sweep["runs"] = runs
-    path = SWEEP_DIR / f"{grid.label}_recap_raw_100_asha_r{rung}_e{epochs}.yml"
+    namespace = run_namespace(grid, run_suffix)
+    path = SWEEP_DIR / f"{namespace}_asha_r{rung}_e{epochs}.yml"
     path.write_text(yaml.safe_dump(sweep, sort_keys=False), encoding="utf-8")
     return path
 
 
-def write_final_sweep(grid: MethodGrid, runs: list[dict[str, Any]], selection_metric: str) -> Path:
-    name = f"orange_recap_raw_{grid.label}_100_final_e{FINAL_EPOCHS}"
+def write_final_sweep(
+    grid: MethodGrid,
+    run_suffix: str,
+    runs: list[dict[str, Any]],
+    selection_metric: str,
+    checkpoint_mode: str,
+) -> Path:
+    name = sweep_name(grid, run_suffix, f"final_e{FINAL_EPOCHS}")
     sweep = {
         "name": name,
         "repo_root": "${P_EDR_ROOT}/external/PIDSMaker",
-        "artifact_root": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/artifacts/final/{grid.label}",
+        "artifact_root": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/artifacts/final/{run_namespace(grid, run_suffix)}",
         "results_dir": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/results/final/{name}",
-        "checkpoint_dir": final_checkpoint_dir(grid),
+        "checkpoint_dir": final_checkpoint_dir(grid, run_suffix),
+        "checkpoint_mode": checkpoint_mode,
         "selection_metric": selection_metric,
         "completion_metric": selection_metric,
         "method": grid.method,
@@ -276,13 +321,14 @@ def write_final_sweep(grid: MethodGrid, runs: list[dict[str, Any]], selection_me
         "epochs": FINAL_EPOCHS,
         "runs": runs,
     }
-    path = SWEEP_DIR / f"{grid.label}_recap_raw_100_final_e{FINAL_EPOCHS}.yml"
+    namespace = run_namespace(grid, run_suffix)
+    path = SWEEP_DIR / f"{namespace}_final_e{FINAL_EPOCHS}.yml"
     path.write_text(yaml.safe_dump(sweep, sort_keys=False), encoding="utf-8")
     return path
 
 
-def write_grid_csv(grid: MethodGrid, combos: list[tuple[Any, ...]]) -> Path:
-    path = GRID_DIR / f"{grid.label}_recap_raw_100_grid.csv"
+def write_grid_csv(grid: MethodGrid, run_suffix: str, combos: list[tuple[Any, ...]]) -> Path:
+    path = GRID_DIR / f"{run_namespace(grid, run_suffix)}_grid.csv"
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(["index", "name", *[axis.name for axis in grid.axes]])
@@ -293,6 +339,8 @@ def write_grid_csv(grid: MethodGrid, combos: list[tuple[Any, ...]]) -> Path:
 
 def write_asha_config(
     grid: MethodGrid,
+    run_suffix: str,
+    rung_epochs: tuple[int, ...],
     rung_paths: list[Path],
     final_sweep_path: Path,
     selection_metric: str,
@@ -306,21 +354,23 @@ def write_asha_config(
 ) -> Path:
     rungs = []
     rung_walltimes = RUNG_WALLTIMES[grid.label]
-    for rung, (epochs, path) in enumerate(zip(RUNG_EPOCHS, rung_paths)):
+    namespace = run_namespace(grid, run_suffix)
+    job_suffix = f"_{run_suffix}" if run_suffix else ""
+    for rung, (epochs, path) in enumerate(zip(rung_epochs, rung_paths)):
         rungs.append(
             {
                 "name": f"r{rung}_e{epochs}",
                 "sweep": f"${{P_EDR_ROOT}}/{path.as_posix()}",
-                "results_dir": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{grid.label}_recap_raw_100/r{rung}_e{epochs}",
-                "tag": f"{grid.label}_recap_raw100_r{rung}_e{epochs}",
-                "job_name": f"{grid.label}_recap_raw100_r{rung}",
+                "results_dir": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{namespace}/r{rung}_e{epochs}",
+                "tag": f"{grid.label}_recap_raw100{job_suffix}_r{rung}_e{epochs}",
+                "job_name": f"{grid.label}_recap_raw100{job_suffix}_r{rung}"[:60],
                 "sbatch_options": {"time": rung_walltimes[rung]},
             }
         )
 
     config = {
-        "name": f"{grid.label}_recap_raw_100_asha",
-        "results_root": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{grid.label}_recap_raw_100",
+        "name": f"{namespace}_asha",
+        "results_root": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{namespace}",
         "metric": selection_metric,
         "mode": selection_mode,
         "promotion_policy": promotion_policy,
@@ -348,17 +398,17 @@ def write_asha_config(
         "rungs": rungs,
         "final": {
             "name": f"final_e{FINAL_EPOCHS}",
-            "source_rung": f"r{len(RUNG_EPOCHS) - 1}_e{RUNG_EPOCHS[-1]}",
+            "source_rung": f"r{len(rung_epochs) - 1}_e{rung_epochs[-1]}",
             "top_k": FINAL_TOP_K,
             "sweep": f"${{P_EDR_ROOT}}/{final_sweep_path.as_posix()}",
-            "results_dir": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{grid.label}_recap_raw_100/final_e{FINAL_EPOCHS}",
-            "tag": f"{grid.label}_recap_raw100_final_e{FINAL_EPOCHS}",
-            "job_name": f"{grid.label}_recap_raw100_final_e{FINAL_EPOCHS}",
+            "results_dir": f"${{P_EDR_ROOT}}/meluxina/pidsmaker/asha_runs/{namespace}/final_e{FINAL_EPOCHS}",
+            "tag": f"{grid.label}_recap_raw100{job_suffix}_final_e{FINAL_EPOCHS}",
+            "job_name": f"{grid.label}_recap_raw100{job_suffix}_final_e{FINAL_EPOCHS}"[:60],
             "export_env": {"MELUXINA_PIDSMAKER_PHASE": "final"},
             "sbatch_options": {"time": FINAL_WALLTIMES[grid.label]},
         },
     }
-    path = ASHA_DIR / f"{grid.label}_recap_raw_100_asha.yml"
+    path = ASHA_DIR / f"{namespace}_asha.yml"
     path.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
     return path
 
@@ -368,6 +418,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--metric", default=DEFAULT_SELECTION_METRIC)
     parser.add_argument("--mode", choices=["minimize", "maximize"], default=DEFAULT_SELECTION_MODE)
     parser.add_argument("--promotion-policy", choices=["async", "sync"], default=DEFAULT_PROMOTION_POLICY)
+    parser.add_argument("--run-suffix", default="")
+    parser.add_argument(
+        "--rung-epochs",
+        type=parse_rung_epochs,
+        default=DEFAULT_RUNG_EPOCHS,
+        help="Comma-separated ASHA rung resources, e.g. 1,2,4,8",
+    )
+    parser.add_argument("--checkpoint-mode", choices=["model_optimizer", "full_state"], default="model_optimizer")
     parser.add_argument("--account", default=DEFAULT_ACCOUNT)
     parser.add_argument("--submit-accounts", default=",".join(DEFAULT_SUBMIT_ACCOUNTS))
     parser.add_argument("--array-concurrency", type=int, default=DEFAULT_ARRAY_CONCURRENCY)
@@ -378,6 +436,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    rung_epochs = tuple(args.rung_epochs)
+    run_suffix = str(args.run_suffix).strip().strip("_")
     submit_accounts = [item.strip() for item in args.submit_accounts.split(",") if item.strip()]
     if not submit_accounts:
         raise RuntimeError("At least one submit account is required")
@@ -386,6 +446,10 @@ def main() -> None:
     GRID_DIR.mkdir(parents=True, exist_ok=True)
 
     for grid in METHODS:
+        if len(rung_epochs) != len(RUNG_WALLTIMES[grid.label]):
+            raise RuntimeError(
+                f"{grid.label} has {len(RUNG_WALLTIMES[grid.label])} walltimes but {len(rung_epochs)} rung epochs"
+            )
         combos = ordered_combos(grid)
         if len(combos) != grid.expected_configs:
             raise RuntimeError(f"{grid.label} has {len(combos)} configs, expected {grid.expected_configs}")
@@ -394,14 +458,28 @@ def main() -> None:
             for index, combo in enumerate(combos)
         ]
         rung_paths = []
-        for rung, epochs in enumerate(RUNG_EPOCHS):
+        for rung, epochs in enumerate(rung_epochs):
             previous_rung = rung - 1 if rung > 0 else None
-            previous_epochs = RUNG_EPOCHS[rung - 1] if rung > 0 else None
-            rung_paths.append(write_sweep(grid, rung, epochs, runs, args.metric, previous_rung, previous_epochs))
-        final_sweep_path = write_final_sweep(grid, runs, args.metric)
-        csv_path = write_grid_csv(grid, combos)
+            previous_epochs = rung_epochs[rung - 1] if rung > 0 else None
+            rung_paths.append(
+                write_sweep(
+                    grid,
+                    run_suffix,
+                    rung,
+                    epochs,
+                    runs,
+                    args.metric,
+                    args.checkpoint_mode,
+                    previous_rung,
+                    previous_epochs,
+                )
+            )
+        final_sweep_path = write_final_sweep(grid, run_suffix, runs, args.metric, args.checkpoint_mode)
+        csv_path = write_grid_csv(grid, run_suffix, combos)
         asha_path = write_asha_config(
             grid,
+            run_suffix,
+            rung_epochs,
             rung_paths,
             final_sweep_path,
             args.metric,
